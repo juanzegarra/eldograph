@@ -1,9 +1,12 @@
 
 <!DOCTYPE html>
+<head>
 <meta charset="utf-8">
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <style>
+
+
 
 path.link {
   fill: none;
@@ -48,11 +51,13 @@ div.param {
 
 div#graph {
 	margin: 10px;
-	border; gray;
+	border:1px;
+	color: grey;
 	border-style: solid;
 	display: inline-block;
 }
 </style>
+</head>
 <body>
 <h1>ELDO analysis</h1>
 <form>
@@ -88,11 +93,14 @@ div#graph {
 	<div class="param" style="background:#FFF">
 		<button type="button" id="myBtn" onclick="download()">Download</button>
 	</div>
-	<div class="textbox" id="busca" style="background:#FFF;" placeholder="Type your clade..." contenteditable="true">
+	<div class="textbox" id="busca" style="background:#FFF;">
+	    <label for="busca">Clade:</label>
+		<input type="text" id="busca" placeholder="Type your clade...">
 	    <div id="sugestoes"></div>
 	</div>
-	<div class="textbox" id="depth_n" style="background: #FFF;" placeholder="0" contenteditable="true" style="border: 1px solid #ccc; padding: 8px; width: 200px;"
-    oninput="this.innerText = this.innerText.replace(/[^0-9]/g, '')">>
+	<div class="textbox" id="depth_n" placeholder="0" style="border: 1px solid #ccc; padding: 8px; width: 200px;">
+        <input type="number" min="0" id="depth_n">
+        <label for="depth_n">Depth of search:</label>
 	</div>
 	<div class="button">
 	<button id="run" >Generate Graph</button>
@@ -102,7 +110,7 @@ div#graph {
 <script>
 
 // get the data
-files = ["class_results_0.05.json", "family_results_0.05.json",
+const files = ["class_results_0.05.json", "family_results_0.05.json",
           "genero_results_0.05.json", "class_results_0.1.json",
           "family_results_0.1.json", "order_results_0.05.json"]
 
@@ -117,7 +125,7 @@ var outline = false;
 var default_node_color = "#ccc";
 var nominal_stroke = 1.5;
 var nominal_text_size = 10;
-var json_file = NONE
+var json_file = null
 
 const taxon_file = document.getElementById("taxon")
 const input = document.getElementById("busca");
@@ -160,7 +168,6 @@ input.addEventListener("input", () => {
             input.value = item.source;
             listaSugestoes.innerHTML = "";
 
-            updateGraph(item);
         });
 
         listaSugestoes.appendChild(div);
@@ -169,20 +176,20 @@ input.addEventListener("input", () => {
 
 // fecha a lista se clicar fora
 document.addEventListener("click", (e) => {
-if (!document.getElementById("caixa").contains(e.target)) {
+if (!document.getElementById("busca").contains(e.target)) {
   listaSugestoes.innerHTML = "";
 }
 });
 
-run_command = document.getElementById("run")
+var run_command = document.getElementById("run")
 
 
 //só rodar se entradas estarem certas
 run_command.addEventListener("click", ()=>{
-  if(profundidade > 0 && itemSelecionado && files.includes(taxon_file)){
+  if(profundidade.value > 0 && itemSelecionado && files.includes(taxon_file.value)){
     var links;
 
-    d3.json("links.json", function(error, data) {
+    d3.json(taxon_file.value, function(error, data) {
 
         if (error) {
             console.log(error);
@@ -192,16 +199,17 @@ run_command.addEventListener("click", ()=>{
         links = data;
 
         console.log(links);
+
+        //filtrar ou não filtrar
+        if(itemSelecionado === "all"){
+          draw(links)
+        }
+        else{
+          var new_nodes = getSubgraph(itemSelecionado, profundidade, links)
+          var new_links = get_new_links(new_nodes, links)
+          draw(new_links)
+        }
     });
-    //filtrar ou não filtrar
-    if(itemSelecionado === "all"){
-      draw(links)
-    }
-    else{
-      new_nodes = getSubgraph(itemSelecionado, depth, links)
-      new_links = get_new_links(new_nodes, links)
-      draw(new_links)
-    }
   };
 })
 
@@ -256,10 +264,12 @@ function getSubgraph(startNode, maxDepth, links) {
 function get_new_links(visible_Nodes, links){
   var visibleLinks = links.filter(function(link) {
 
-      return visibleNodes.has(link.source) &&
+      return visible_Nodes.has(link.source) &&
              visibleNodes.has(link.target);
 
   });
+
+  return visibleLinks;
 }
 
 function draw(links){
@@ -286,14 +296,6 @@ function draw(links){
         return linkedByIndex[b.name + "," + a.name]|| a.name == b.name;// || linkedByIndex[a.name + "," + b.name];
     }
 
-	function hasConnections(a) {
-		for (var property in linkedByIndex) {
-				s = property.split(",");
-				if ((s[0] == a.name || s[1] == a.name) && linkedByIndex[property])
-				return true;
-		}
-	return false;
-	}
 
 	var width = 1200,
 		height= 800;
@@ -306,6 +308,10 @@ function draw(links){
 		.charge(chargeValue)
 		.on("tick", tick)
 		.start();
+
+	setTimeout(function() {
+    force.stop();
+	}, 1500);
 
 	// Set the range
 	var  v = d3.scale.linear().range([0, 100]);
@@ -561,7 +567,7 @@ $( "form" ).change(function( event ) {
 	chargeValue = $( "input#chargeValueIn" ).val()*(-1);
 
 	$( "svg#graphResult").remove();
-	draw();
+	draw(links);
     return false;
 });
 
