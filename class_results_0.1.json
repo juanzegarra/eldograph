@@ -1,0 +1,152 @@
+[
+  {
+    "source": "Aves",
+    "target": "Amphibia",
+    "value": 0.407648027837933
+  },
+  {
+    "source": "Lepidosauria",
+    "target": "Amphibia",
+    "value": 0.247256001628815
+  },
+  {
+    "source": "Mammalia",
+    "target": "Amphibia",
+    "value": 0.394191792992393
+  },
+  {
+    "source": "cla_of_Archelosauria",
+    "target": "Amphibia",
+    "value": 0.479038258648454
+  },
+  {
+    "source": "cla_of_Archosauria",
+    "target": "Amphibia",
+    "value": 0.26314620467544
+  },
+  {
+    "source": "Amphibia",
+    "target": "Aves",
+    "value": 0.0320619134023591
+  },
+  {
+    "source": "Lepidosauria",
+    "target": "Aves",
+    "value": 0.101382308750408
+  },
+  {
+    "source": "Mammalia",
+    "target": "Aves",
+    "value": 0.106295648169716
+  },
+  {
+    "source": "cla_of_Archelosauria",
+    "target": "Aves",
+    "value": 0.62180116508573
+  },
+  {
+    "source": "cla_of_Archosauria",
+    "target": "Aves",
+    "value": 0.609279371505698
+  },
+  {
+    "source": "Amphibia",
+    "target": "Lepidosauria",
+    "value": 0.0536068648682935
+  },
+  {
+    "source": "Aves",
+    "target": "Lepidosauria",
+    "value": 0.383412317980409
+  },
+  {
+    "source": "Mammalia",
+    "target": "Lepidosauria",
+    "value": 0.10311347511304
+  },
+  {
+    "source": "cla_of_Archelosauria",
+    "target": "Lepidosauria",
+    "value": 0.643282378419522
+  },
+  {
+    "source": "cla_of_Archosauria",
+    "target": "Lepidosauria",
+    "value": 0.306359245734376
+  },
+  {
+    "source": "Amphibia",
+    "target": "Mammalia",
+    "value": 0.218698549952044
+  },
+  {
+    "source": "Aves",
+    "target": "Mammalia",
+    "value": 0.51887991839966
+  },
+  {
+    "source": "Lepidosauria",
+    "target": "Mammalia",
+    "value": 0.220287597333322
+  },
+  {
+    "source": "cla_of_Archelosauria",
+    "target": "Mammalia",
+    "value": 0.55174055793218
+  },
+  {
+    "source": "cla_of_Archosauria",
+    "target": "Mammalia",
+    "value": 0.331600422621397
+  },
+  {
+    "source": "Amphibia",
+    "target": "cla_of_Archelosauria",
+    "value": 0.0283262892186549
+  },
+  {
+    "source": "Aves",
+    "target": "cla_of_Archelosauria",
+    "value": 0.400891283402328
+  },
+  {
+    "source": "Lepidosauria",
+    "target": "cla_of_Archelosauria",
+    "value": 0.172937697562956
+  },
+  {
+    "source": "Mammalia",
+    "target": "cla_of_Archelosauria",
+    "value": 0.0531919099851614
+  },
+  {
+    "source": "cla_of_Archosauria",
+    "target": "cla_of_Archelosauria",
+    "value": 0.613226079664067
+  },
+  {
+    "source": "Amphibia",
+    "target": "cla_of_Archosauria",
+    "value": 0.00961034960726937
+  },
+  {
+    "source": "Aves",
+    "target": "cla_of_Archosauria",
+    "value": 0.464777452641306
+  },
+  {
+    "source": "Lepidosauria",
+    "target": "cla_of_Archosauria",
+    "value": 0.0522100723856461
+  },
+  {
+    "source": "Mammalia",
+    "target": "cla_of_Archosauria",
+    "value": 0.0272755274911443
+  },
+  {
+    "source": "cla_of_Archelosauria",
+    "target": "cla_of_Archosauria",
+    "value": 0.673263514554135
+  }
+]

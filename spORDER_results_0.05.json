@@ -1,0 +1,2532 @@
+[
+  {
+    "source": "Batrachia",
+    "target": "Afrotheria",
+    "value": 0.00343950453439505
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "Afrotheria",
+    "value": 0.526675514266755
+  },
+  {
+    "source": "Galloanserae",
+    "target": "Afrotheria",
+    "value": 0.00640345056403451
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "Afrotheria",
+    "value": 0.652444149524442
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "Afrotheria",
+    "value": 0.00603848706038487
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "Afrotheria",
+    "value": 0.00577305905773059
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "Afrotheria",
+    "value": 0.00522008405220084
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "Afrotheria",
+    "value": 0.00321831453218315
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "Afrotheria",
+    "value": 0.00578411855784119
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "Afrotheria",
+    "value": 0.010539703605397
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "Afrotheria",
+    "value": 0.00500995355009954
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "Afrotheria",
+    "value": 0.00733244857332449
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "Afrotheria",
+    "value": 0.00831674408316744
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "Afrotheria",
+    "value": 0.0181928776819288
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "Afrotheria",
+    "value": 0.00196859101968591
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "Afrotheria",
+    "value": 0.00704490157044902
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "Afrotheria",
+    "value": 0.00646980756469808
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "Afrotheria",
+    "value": 0.00273169652731697
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "Afrotheria",
+    "value": 0.00912408759124088
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "Afrotheria",
+    "value": 0.00607166556071666
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "Afrotheria",
+    "value": 0.00568458305684583
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "Afrotheria",
+    "value": 0.00843839858438399
+  },
+  {
+    "source": "Afrotheria",
+    "target": "Batrachia",
+    "value": 0.0152667123561495
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "Batrachia",
+    "value": 0.0530176475627517
+  },
+  {
+    "source": "Galloanserae",
+    "target": "Batrachia",
+    "value": 0.0321040006853423
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "Batrachia",
+    "value": 0.0733887318312915
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "Batrachia",
+    "value": 0.0326429938033639
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "Batrachia",
+    "value": 0.0300836688654731
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "Batrachia",
+    "value": 0.0463891030583398
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "Batrachia",
+    "value": 0.612085582112564
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "Batrachia",
+    "value": 0.0481952654273395
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "Batrachia",
+    "value": 0.0822731945515289
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "Batrachia",
+    "value": 0.0285844827093864
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "Batrachia",
+    "value": 0.049187583883035
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "Batrachia",
+    "value": 0.0863209971729631
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "Batrachia",
+    "value": 0.0335353665153203
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "Batrachia",
+    "value": 0.0160234444158885
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "Batrachia",
+    "value": 0.0478026214340787
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "Batrachia",
+    "value": 0.028837916559582
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "Batrachia",
+    "value": 0.0191396099260401
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "Batrachia",
+    "value": 0.0283096319141038
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "Batrachia",
+    "value": 0.028613038636169
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "Batrachia",
+    "value": 0.0230517718952568
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "Batrachia",
+    "value": 0.148323053199692
+  },
+  {
+    "source": "Afrotheria",
+    "target": "Euarchontoglires",
+    "value": 0.249988098442353
+  },
+  {
+    "source": "Batrachia",
+    "target": "Euarchontoglires",
+    "value": 0.00702466552045512
+  },
+  {
+    "source": "Galloanserae",
+    "target": "Euarchontoglires",
+    "value": 0.0102847768091741
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "Euarchontoglires",
+    "value": 0.862709124100287
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "Euarchontoglires",
+    "value": 0.00914131177137293
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "Euarchontoglires",
+    "value": 0.00917930520537514
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "Euarchontoglires",
+    "value": 0.00857049475690613
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "Euarchontoglires",
+    "value": 0.00521196674155492
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "Euarchontoglires",
+    "value": 0.00894264730924093
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "Euarchontoglires",
+    "value": 0.0179411403889428
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "Euarchontoglires",
+    "value": 0.00787516913944415
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "Euarchontoglires",
+    "value": 0.0109448555059353
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "Euarchontoglires",
+    "value": 0.0128477314715635
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "Euarchontoglires",
+    "value": 0.0204949400069943
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "Euarchontoglires",
+    "value": 0.00282799319597105
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "Euarchontoglires",
+    "value": 0.0109219678950906
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "Euarchontoglires",
+    "value": 0.00957663412963912
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "Euarchontoglires",
+    "value": 0.00435551234374628
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "Euarchontoglires",
+    "value": 0.0136263679925002
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "Euarchontoglires",
+    "value": 0.00894951359249435
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "Euarchontoglires",
+    "value": 0.00884926585699456
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "Euarchontoglires",
+    "value": 0.0135027748939388
+  },
+  {
+    "source": "Afrotheria",
+    "target": "Galloanserae",
+    "value": 0.00865327899619282
+  },
+  {
+    "source": "Batrachia",
+    "target": "Galloanserae",
+    "value": 0.00549627325861976
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "Galloanserae",
+    "value": 0.0136066277012172
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "Galloanserae",
+    "value": 0.0155102150249343
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "Galloanserae",
+    "value": 0.183059413373371
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "Galloanserae",
+    "value": 0.232438736661483
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "Galloanserae",
+    "value": 0.381655852860743
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "Galloanserae",
+    "value": 0.00437691029009598
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "Galloanserae",
+    "value": 0.024029438575795
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "Galloanserae",
+    "value": 0.307315405651778
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "Galloanserae",
+    "value": 0.144458147889967
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "Galloanserae",
+    "value": 0.231426618049225
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "Galloanserae",
+    "value": 0.0188683039305057
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "Galloanserae",
+    "value": 0.00827122097699609
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "Galloanserae",
+    "value": 0.102311115877527
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "Galloanserae",
+    "value": 0.337055606198724
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "Galloanserae",
+    "value": 0.178414392192611
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "Galloanserae",
+    "value": 0.0888519491661751
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "Galloanserae",
+    "value": 0.00798970454179849
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "Galloanserae",
+    "value": 0.194118987613277
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "Galloanserae",
+    "value": 0.154378250844549
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "Galloanserae",
+    "value": 0.0253833985736501
+  },
+  {
+    "source": "Afrotheria",
+    "target": "Laurasiatheria",
+    "value": 0.301482831210543
+  },
+  {
+    "source": "Batrachia",
+    "target": "Laurasiatheria",
+    "value": 0.00713413623605411
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "Laurasiatheria",
+    "value": 0.838782854835701
+  },
+  {
+    "source": "Galloanserae",
+    "target": "Laurasiatheria",
+    "value": 0.0115445916021383
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "Laurasiatheria",
+    "value": 0.0104850297606455
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "Laurasiatheria",
+    "value": 0.0104825173838842
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "Laurasiatheria",
+    "value": 0.00967816012919797
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "Laurasiatheria",
+    "value": 0.00474574747175559
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "Laurasiatheria",
+    "value": 0.0101897593760138
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "Laurasiatheria",
+    "value": 0.0193718352868158
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "Laurasiatheria",
+    "value": 0.00865491755878085
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "Laurasiatheria",
+    "value": 0.0125851563491727
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "Laurasiatheria",
+    "value": 0.014293528470077
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "Laurasiatheria",
+    "value": 0.0231645104303301
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "Laurasiatheria",
+    "value": 0.00343719587018153
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "Laurasiatheria",
+    "value": 0.0126749407608005
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "Laurasiatheria",
+    "value": 0.0108904921084924
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "Laurasiatheria",
+    "value": 0.004839631024415
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "Laurasiatheria",
+    "value": 0.0146263522757724
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "Laurasiatheria",
+    "value": 0.010002917883186
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "Laurasiatheria",
+    "value": 0.010046818361331
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "Laurasiatheria",
+    "value": 0.0147078943285517
+  },
+  {
+    "source": "Afrotheria",
+    "target": "Palaeognathae",
+    "value": 0.00638745905474965
+  },
+  {
+    "source": "Batrachia",
+    "target": "Palaeognathae",
+    "value": 0.00563874590547496
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "Palaeognathae",
+    "value": 0.0107978474496958
+  },
+  {
+    "source": "Galloanserae",
+    "target": "Palaeognathae",
+    "value": 0.323748245203556
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "Palaeognathae",
+    "value": 0.0136289190453907
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "Palaeognathae",
+    "value": 0.187856808610201
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "Palaeognathae",
+    "value": 0.356738418343472
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "Palaeognathae",
+    "value": 0.00341600374356575
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "Palaeognathae",
+    "value": 0.0308142255498362
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "Palaeognathae",
+    "value": 0.25742863827796
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "Palaeognathae",
+    "value": 0.121022461394478
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "Palaeognathae",
+    "value": 0.20394244267665
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "Palaeognathae",
+    "value": 0.0155357978474497
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "Palaeognathae",
+    "value": 0.0064225549836219
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "Palaeognathae",
+    "value": 0.0934136640149743
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "Palaeognathae",
+    "value": 0.275538137576041
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "Palaeognathae",
+    "value": 0.147660271408517
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "Palaeognathae",
+    "value": 0.089365933551708
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "Palaeognathae",
+    "value": 0.00579082826392139
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "Palaeognathae",
+    "value": 0.15873888628919
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "Palaeognathae",
+    "value": 0.123081422554984
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "Palaeognathae",
+    "value": 0.0346396817969116
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.00336806651931376
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.0021752096270568
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.00478312224444211
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.0899437486112573
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.00481820627068496
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.0516787706557204
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.553462208656399
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.00156708650551404
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.00859558642949865
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.259083839128045
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.102293325848741
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.1794664889076
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.00612800991708475
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.00311078366019951
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.11929738390111
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.325556374182835
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.140558303804278
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.0797810756762446
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.00267808066987101
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.163678677098317
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.184401641932428
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Accipitrimorphae",
+    "value": 0.00950777111181279
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Aequornithes",
+    "value": 0.00227042009090105
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Aequornithes",
+    "value": 0.00191237610625061
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Aequornithes",
+    "value": 0.00404168474437766
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Aequornithes",
+    "value": 0.0884916238769003
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Aequornithes",
+    "value": 0.00479147097105741
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Aequornithes",
+    "value": 0.0520953997666396
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Aequornithes",
+    "value": 0.315272471472319
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Aequornithes",
+    "value": 0.00120892498346679
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Aequornithes",
+    "value": 0.00656062948344784
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Aequornithes",
+    "value": 0.2509066937376
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Aequornithes",
+    "value": 0.116530680157202
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Aequornithes",
+    "value": 0.191161789545958
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Aequornithes",
+    "value": 0.00481463852300538
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Aequornithes",
+    "value": 0.00213773320247177
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Aequornithes",
+    "value": 0.134247538974141
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Aequornithes",
+    "value": 0.427304434269443
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Aequornithes",
+    "value": 0.169858172459257
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Aequornithes",
+    "value": 0.109843682208584
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Aequornithes",
+    "value": 0.0019629234923189
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Aequornithes",
+    "value": 0.200517268250766
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Aequornithes",
+    "value": 0.14859035977102
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Aequornithes",
+    "value": 0.00797806243444636
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Amphibia",
+    "value": 0.0158562804928471
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Amphibia",
+    "value": 0.45619366575705
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Amphibia",
+    "value": 0.032828909286364
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Amphibia",
+    "value": 0.030492847101629
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Amphibia",
+    "value": 0.0382452658562805
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Amphibia",
+    "value": 0.0448193169602249
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Amphibia",
+    "value": 0.0365293971719176
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Amphibia",
+    "value": 0.0569957826841975
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Amphibia",
+    "value": 0.139212767716861
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Amphibia",
+    "value": 0.0662986851897792
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Amphibia",
+    "value": 0.0261101463656661
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Amphibia",
+    "value": 0.0484991317290995
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Amphibia",
+    "value": 0.0769246671628215
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Amphibia",
+    "value": 0.0629289671710907
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Amphibia",
+    "value": 0.017592822293889
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Amphibia",
+    "value": 0.0513313487141321
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Amphibia",
+    "value": 0.0337591995369222
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Amphibia",
+    "value": 0.0191846522781775
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Amphibia",
+    "value": 0.0707847515091375
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Amphibia",
+    "value": 0.0339452575870338
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Amphibia",
+    "value": 0.0251798561151079
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Amphibia",
+    "value": 0.400645001240387
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Archosauria",
+    "value": 0.00667580266249021
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Archosauria",
+    "value": 0.00485512920908379
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Archosauria",
+    "value": 0.0116092404072044
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Archosauria",
+    "value": 0.0606695379796398
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Archosauria",
+    "value": 0.0126859827721222
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Archosauria",
+    "value": 0.12247454972592
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Archosauria",
+    "value": 0.0564017227877839
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Archosauria",
+    "value": 0.0940289741581832
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Archosauria",
+    "value": 0.00514878621769773
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Archosauria",
+    "value": 0.0953406421299922
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Archosauria",
+    "value": 0.0397415818324197
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Archosauria",
+    "value": 0.0761550509005482
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Archosauria",
+    "value": 0.0454385277995301
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Archosauria",
+    "value": 0.00759592795614722
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Archosauria",
+    "value": 0.0245497259201253
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Archosauria",
+    "value": 0.0907987470634299
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Archosauria",
+    "value": 0.0464565387627251
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Archosauria",
+    "value": 0.0240602975724354
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Archosauria",
+    "value": 0.00904463586530932
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Archosauria",
+    "value": 0.0521534847298356
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Archosauria",
+    "value": 0.0395458104933438
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Archosauria",
+    "value": 0.689056382145654
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Australaves",
+    "value": 0.00791495208668537
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Australaves",
+    "value": 0.00621698395295525
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Australaves",
+    "value": 0.0125968233401205
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Australaves",
+    "value": 0.196242578063818
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Australaves",
+    "value": 0.014175542139511
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Australaves",
+    "value": 0.126171135253663
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Australaves",
+    "value": 0.301801376884851
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Australaves",
+    "value": 0.455276160100241
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Australaves",
+    "value": 0.00376970283777819
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Australaves",
+    "value": 0.0207609531403511
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Australaves",
+    "value": 0.222828950178696
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Australaves",
+    "value": 0.405026804402614
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Australaves",
+    "value": 0.0159891999259586
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Australaves",
+    "value": 0.00749223989406387
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Australaves",
+    "value": 0.160193682277057
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Australaves",
+    "value": 0.424615732368897
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Australaves",
+    "value": 0.267187032791787
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Australaves",
+    "value": 0.141977011576085
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Australaves",
+    "value": 0.00677763380843217
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Australaves",
+    "value": 0.305418903333286
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Australaves",
+    "value": 0.215440830972078
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Australaves",
+    "value": 0.0241488801241617
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.00397311614832967
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.00337850012613067
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.0072254856030848
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.103832570543083
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.00805434430069552
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.0656149771162925
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.189790623085517
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.409330065948322
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.00203610940934808
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.010306677718116
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.270892644779992
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.236278784821075
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.00827957764243756
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.0034145374608094
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.0998053983927349
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.317524955854265
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.178763198673826
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.0898861220224152
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.00324336012108544
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.195394428628059
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.127491080759667
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Columbimorphae",
+    "value": 0.0129824498180115
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.00424995856124648
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.0034410740924913
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.0069816011934361
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.124243328360683
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.0081882976960053
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.0785214652743245
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.227124150505553
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.414122327200398
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.00218133598541356
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.0114636167744074
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.351460301674126
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.163182496270512
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.00896403116194265
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.00387203712912316
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.115604177026355
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.344505221282944
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.200908337477209
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.106156141223272
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.00341455329023703
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.229351897894911
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.156704790319907
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Coraciimorphae",
+    "value": 0.013843858776728
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0298151460942159
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0527280858676208
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0595557543231962
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0771466905187835
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.074031007751938
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0809630292188432
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0631037567084079
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0885957066189624
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0385807990459153
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.189669051878354
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.14809183064997
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0565146094215862
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0932766845557543
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0405187835420394
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0282349433512224
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0935748360166965
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.068783542039356
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0328562909958259
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0396988670244484
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0675014907573047
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.0564549791293977
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Lepidosauria",
+    "value": 0.571332737030411
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Metatheria",
+    "value": 0.212654145889941
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Metatheria",
+    "value": 0.00883819533606043
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Metatheria",
+    "value": 0.374996267653997
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Metatheria",
+    "value": 0.0146606551013705
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Metatheria",
+    "value": 0.396972320922039
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Metatheria",
+    "value": 0.0145710787972888
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Metatheria",
+    "value": 0.0139141859006897
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Metatheria",
+    "value": 0.0180944134245021
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Metatheria",
+    "value": 0.0083305962795975
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Metatheria",
+    "value": 0.0242453196381117
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Metatheria",
+    "value": 0.0298886267952584
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Metatheria",
+    "value": 0.0117942133707563
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Metatheria",
+    "value": 0.0221253471081783
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Metatheria",
+    "value": 0.0222746409483145
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Metatheria",
+    "value": 0.00531486070884715
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Metatheria",
+    "value": 0.0186617300170195
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Metatheria",
+    "value": 0.0147800901734794
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Metatheria",
+    "value": 0.00773342091905288
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Metatheria",
+    "value": 0.348989280702278
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Metatheria",
+    "value": 0.0144516437251799
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Metatheria",
+    "value": 0.0125406825714371
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Metatheria",
+    "value": 0.0520736914394912
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.00182912887737215
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.00198155628381983
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.00312476183217743
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.0822726926301349
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.00369636460635622
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.0453090465665727
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.262060818535173
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.485976678606813
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.000762137032238396
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.00514442496760918
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.210387927749409
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.102278789726393
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.168013108756954
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.00342961664507278
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.00148616721286487
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.293079795747275
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.144767929273683
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.0782714732108833
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.00133373980641719
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.159896349363616
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.108604527093971
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Mirandornithes",
+    "value": 0.00560170718695221
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Neoaves",
+    "value": 0.00355718221820126
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Neoaves",
+    "value": 0.00268947649792326
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Neoaves",
+    "value": 0.00523090841797919
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Neoaves",
+    "value": 0.116058724349221
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Neoaves",
+    "value": 0.00597935600608628
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Neoaves",
+    "value": 0.0671916766048443
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Neoaves",
+    "value": 0.25165933297693
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Neoaves",
+    "value": 0.592581321709092
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Neoaves",
+    "value": 0.00162026565777028
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Neoaves",
+    "value": 0.00918287617716001
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Neoaves",
+    "value": 0.271711148579183
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Neoaves",
+    "value": 0.141950076078464
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Neoaves",
+    "value": 0.226981124316322
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Neoaves",
+    "value": 0.00692930871406835
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Neoaves",
+    "value": 0.00310893613521405
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Neoaves",
+    "value": 0.126022946909569
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Neoaves",
+    "value": 0.186680100341325
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Neoaves",
+    "value": 0.0984537566311634
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Neoaves",
+    "value": 0.00279228523255336
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Neoaves",
+    "value": 0.214183493029568
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Neoaves",
+    "value": 0.156853230250442
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Neoaves",
+    "value": 0.0106674343052186
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.00386449495262278
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.00256394376664396
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.00557379079705208
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.112342850065028
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.00667616275469127
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.071691335851861
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.209599306372701
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.447191428748374
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.00189508887099771
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.00992134761875271
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.281303028426333
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.152796185049854
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.247587787205054
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.00754319687867715
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.00344336409240107
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.115959620982226
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.339902149006007
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.100117668916827
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.00294791602155199
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.216300241530935
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.136582646931319
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Otidimorphae",
+    "value": 0.0108255403480523
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.0027177033492823
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.00252631578947368
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.00566507177033493
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.0670239234449761
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.00719617224880383
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.0489952153110048
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.165282296650718
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.478315789473684
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.00133971291866029
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.00780861244019139
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.208344497607655
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.109626794258373
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.193148325358852
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.00608612440191388
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.00260287081339713
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.0821818181818182
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.275406698564593
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.142813397129187
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.00244976076555024
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.145799043062201
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.10288995215311
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Phaethontimorphae",
+    "value": 0.00960765550239234
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Prototheria",
+    "value": 0.0772683163512858
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Prototheria",
+    "value": 0.0104318292091218
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Prototheria",
+    "value": 0.147016011644833
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Prototheria",
+    "value": 0.0214701601164483
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Prototheria",
+    "value": 0.158418243571082
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Prototheria",
+    "value": 0.0246239689471131
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Prototheria",
+    "value": 0.0186802523047065
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Prototheria",
+    "value": 0.0243813682678312
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Prototheria",
+    "value": 0.0164968461911693
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Prototheria",
+    "value": 0.0440320232896652
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Prototheria",
+    "value": 0.0413634158175643
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Prototheria",
+    "value": 0.0145560407569141
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Prototheria",
+    "value": 0.0285055798156235
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Prototheria",
+    "value": 0.0333575934012615
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Prototheria",
+    "value": 0.673580786026201
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Prototheria",
+    "value": 0.00739932071809801
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Prototheria",
+    "value": 0.0237748665696264
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Prototheria",
+    "value": 0.0184376516254246
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Prototheria",
+    "value": 0.00946142649199418
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Prototheria",
+    "value": 0.0196506550218341
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Prototheria",
+    "value": 0.0157690441533236
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Prototheria",
+    "value": 0.115963124696749
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Strisores",
+    "value": 0.00355845865119793
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Strisores",
+    "value": 0.00233371517706988
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Strisores",
+    "value": 0.00532550147456677
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Strisores",
+    "value": 0.104883131443613
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Strisores",
+    "value": 0.00602622535279924
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Strisores",
+    "value": 0.0628579785030101
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Strisores",
+    "value": 0.214866314070535
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Strisores",
+    "value": 0.461807502010773
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Strisores",
+    "value": 0.0016695508055278
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Strisores",
+    "value": 0.00910331716590704
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Strisores",
+    "value": 0.272362231592288
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Strisores",
+    "value": 0.139724341319554
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Strisores",
+    "value": 0.240726071802871
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Strisores",
+    "value": 0.00669648297545638
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Strisores",
+    "value": 0.00327816909990495
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Strisores",
+    "value": 0.112079261010505
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Strisores",
+    "value": 0.339235662580126
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Strisores",
+    "value": 0.183638402105828
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Strisores",
+    "value": 0.0919166930707548
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Strisores",
+    "value": 0.00292476053523118
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Strisores",
+    "value": 0.139773087328475
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Strisores",
+    "value": 0.0100538643398572
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Telluraves",
+    "value": 0.00497268788849124
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Telluraves",
+    "value": 0.00331512525899416
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Telluraves",
+    "value": 0.00725183650404973
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Telluraves",
+    "value": 0.0958560934262573
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Telluraves",
+    "value": 0.00785458655113958
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Telluraves",
+    "value": 0.0610472782068186
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Telluraves",
+    "value": 0.298756828027877
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Telluraves",
+    "value": 0.470879638349972
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Telluraves",
+    "value": 0.00250517988321718
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Telluraves",
+    "value": 0.0138255792051234
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Telluraves",
+    "value": 0.262083254850254
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Telluraves",
+    "value": 0.11088717272556
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Telluraves",
+    "value": 0.193934827651158
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Telluraves",
+    "value": 0.010265586739499
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Telluraves",
+    "value": 0.00482200037671878
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Telluraves",
+    "value": 0.0901488039178753
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Telluraves",
+    "value": 0.305330570728951
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Telluraves",
+    "value": 0.139932190619702
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Telluraves",
+    "value": 0.0807308344320964
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Telluraves",
+    "value": 0.00435110190242984
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Telluraves",
+    "value": 0.163684309662837
+  },
+  {
+    "source": "spo_of_Testudinata",
+    "target": "spo_of_Telluraves",
+    "value": 0.0153701262007911
+  },
+  {
+    "source": "Afrotheria",
+    "target": "spo_of_Testudinata",
+    "value": 0.00911886507443149
+  },
+  {
+    "source": "Batrachia",
+    "target": "spo_of_Testudinata",
+    "value": 0.0117720899363646
+  },
+  {
+    "source": "Euarchontoglires",
+    "target": "spo_of_Testudinata",
+    "value": 0.0174359066761563
+  },
+  {
+    "source": "Galloanserae",
+    "target": "spo_of_Testudinata",
+    "value": 0.0504593217234094
+  },
+  {
+    "source": "Laurasiatheria",
+    "target": "spo_of_Testudinata",
+    "value": 0.0192993204020528
+  },
+  {
+    "source": "Palaeognathae",
+    "target": "spo_of_Testudinata",
+    "value": 0.103282070686597
+  },
+  {
+    "source": "spo_of_Accipitrimorphae",
+    "target": "spo_of_Testudinata",
+    "value": 0.0536455940250628
+  },
+  {
+    "source": "spo_of_Aequornithes",
+    "target": "spo_of_Testudinata",
+    "value": 0.0840277965470529
+  },
+  {
+    "source": "spo_of_Amphibia",
+    "target": "spo_of_Testudinata",
+    "value": 0.0141850680649026
+  },
+  {
+    "source": "spo_of_Archosauria",
+    "target": "spo_of_Testudinata",
+    "value": 0.626213621389156
+  },
+  {
+    "source": "spo_of_Australaves",
+    "target": "spo_of_Testudinata",
+    "value": 0.0853221258232199
+  },
+  {
+    "source": "spo_of_Columbimorphae",
+    "target": "spo_of_Testudinata",
+    "value": 0.0333387388848353
+  },
+  {
+    "source": "spo_of_Coraciimorphae",
+    "target": "spo_of_Testudinata",
+    "value": 0.0632689772396231
+  },
+  {
+    "source": "spo_of_Lepidosauria",
+    "target": "spo_of_Testudinata",
+    "value": 0.157750509773542
+  },
+  {
+    "source": "spo_of_Metatheria",
+    "target": "spo_of_Testudinata",
+    "value": 0.0157977242628178
+  },
+  {
+    "source": "spo_of_Mirandornithes",
+    "target": "spo_of_Testudinata",
+    "value": 0.0213188945046562
+  },
+  {
+    "source": "spo_of_Neoaves",
+    "target": "spo_of_Testudinata",
+    "value": 0.0775816763816419
+  },
+  {
+    "source": "spo_of_Otidimorphae",
+    "target": "spo_of_Testudinata",
+    "value": 0.0417563838061692
+  },
+  {
+    "source": "spo_of_Phaethontimorphae",
+    "target": "spo_of_Testudinata",
+    "value": 0.0224931004141253
+  },
+  {
+    "source": "spo_of_Prototheria",
+    "target": "spo_of_Testudinata",
+    "value": 0.0144343240508001
+  },
+  {
+    "source": "spo_of_Strisores",
+    "target": "spo_of_Testudinata",
+    "value": 0.0440657555309303
+  },
+  {
+    "source": "spo_of_Telluraves",
+    "target": "spo_of_Testudinata",
+    "value": 0.0339813988966675
+  }
+]

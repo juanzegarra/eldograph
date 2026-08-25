@@ -66,11 +66,21 @@ div#graph {
       <label for="taxon_level">Choose taxon level and cutoff:</label>
       <select name="taxon" id="taxon">
         <option value="genero_results_0.05.json">Genus 0.5</option>
-        <option value="class_results_0.05.json">Class 0.5</option>
+        <option value="genero_results_0.1.json">Genus 0.1</option>
+        <option value="genero_results_0.json">Genus 0</option>
         <option value="family_results_0.05.json">Family 0.5</option>
-        <option value="order_results_0.05.json">Order 0.5</option>
-        <option value="class_results_0.1.json">Class 0.1</option>
         <option value="family_results_0.1.json">Family 0.1</option>
+        <option value="family_results_0.json">Family 0</option>
+        <option value="class_results_0.05.json">Class 0.5</option>
+        <option value="class_results_0.1.json">Class 0.1</option>
+        <option value="class_results_0.json">Class 0</option>
+        <option value="order_results_0.05.json">Order 0.5</option>
+        <option value="order_results_0.1.json">Order 0.1</option>
+        <option value="order_results_0.json">Order 0</option>
+        <option value="spORDER_results_0.05.json">spORDER 0.05</option>
+        <option value="spORDER_results_0.1.json">spORDER 0.1</option>
+        <option value="spORDER_results_0.json">spORDER 0</option>
+
       </select>
     </div>
 
@@ -133,6 +143,22 @@ const listaSugestoes = document.getElementById("sugestoes");
 const profundidade = document.getElementById("depth_n");
 let itemSelecionado = null;
 
+taxon_file.addEventListener("input", () => {
+
+  d3.json(taxon_file.value, function(error, data) {
+
+      if (error) {
+          console.log(error);
+          return;
+      }
+
+      links = data;
+
+      console.log(links);
+
+  });
+});
+
 input.addEventListener("input", () => {
 
     const termo = input.value.toLowerCase().trim();
@@ -188,18 +214,6 @@ var run_command = document.getElementById("run")
 run_command.addEventListener("click", ()=>{
   if(profundidade.value > 0 && itemSelecionado && files.includes(taxon_file.value)){
     var links;
-
-    d3.json(taxon_file.value, function(error, data) {
-
-        if (error) {
-            console.log(error);
-            return;
-        }
-
-        links = data;
-
-        console.log(links);
-
         //filtrar ou não filtrar
         if(itemSelecionado === "all"){
           draw(links)
@@ -209,7 +223,6 @@ run_command.addEventListener("click", ()=>{
           var new_links = get_new_links(new_nodes, links)
           draw(new_links)
         }
-    });
   };
 })
 
@@ -311,7 +324,7 @@ function draw(links){
 
 	setTimeout(function() {
     force.stop();
-	}, 1500);
+	}, 0001);
 
 	// Set the range
 	var  v = d3.scale.linear().range([0, 100]);

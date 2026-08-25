@@ -1,0 +1,597 @@
+
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<style>
+
+body{
+    margin:0;
+    padding:0;
+    background:#f4f6f9;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    color:#222;
+}
+
+h1{
+    font-size:38px;
+    font-weight:700;
+    margin:30px 30px 10px 30px;
+    color:#1f2937;
+}
+
+form{
+    margin-left:20px;
+}
+
+path.link {
+    fill: none;
+    stroke: #666;
+    stroke-width: 2px;
+}
+
+path.link.twofive {
+    opacity: 0.25;
+}
+
+path.link.fivezero {
+    stroke: #3b82f6;
+}
+
+path.link.sevenfive {
+    stroke: #10b981;
+}
+
+path.link.onezerozero {
+    stroke: #ef4444;
+}
+
+circle {
+    fill: #d1d5db;
+    stroke: #fff;
+    stroke-width: 2px;
+}
+
+text {
+    fill: #111827;
+    font: 13px sans-serif;
+    pointer-events: none;
+}
+
+div.param {
+    float:left;
+    margin:12px;
+    padding:16px 20px;
+    background:#ffffff;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    border:1px solid #e5e7eb;
+}
+
+div.param span{
+    display:block;
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:10px;
+    color:#374151;
+}
+
+div.param output{
+    display:inline-block;
+    margin-left:10px;
+    font-size:14px;
+    font-weight:600;
+    color:#2563eb;
+}
+
+input[type=range]{
+    width:180px;
+    cursor:pointer;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:10px 18px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+button:hover{
+    background:#1d4ed8;
+    transform:translateY(-1px);
+}
+
+div#graph {
+    margin:20px;
+    background:white;
+    border:1px solid #d1d5db;
+    border-radius:16px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    display:inline-block;
+    overflow:hidden;
+}
+
+div.tooltip {	
+    position: absolute;
+    text-align: left;
+    padding: 10px 14px;
+    font: 13px sans-serif;
+    background: rgba(17,24,39,0.95);
+    color:white;
+    border-radius: 10px;
+    pointer-events: none;
+    box-shadow:0 4px 10px rgba(0,0,0,0.25);
+    line-height:1.5;
+}
+
+svg text{
+    font-size:13px !important;
+    font-weight:500;
+}
+
+.legend text{
+    font-size:13px !important;
+}
+
+</style>
+<body>
+<h1>ELDOgraph Analysis</h1>
+<form>
+	<div class="param">
+		<span>Threshold:</span>
+		<input id="thresholdValueIn" type="range" min="0" max="100" name="threshold" value="10" oninput="thresholdValueOut.value = thresholdValueIn.value/100;">
+		<output id="thresholdValueOut">0.1</output>
+	</div>
+	<div class="param">
+		<span>Link distance:</span>
+		<input id="linkValueIn" type="range" min="50" max="1000" name="link" value="100" oninput="linkValueOut.value = linkValueIn.value;">
+		<output id="linkValueOut">100</output>
+	</div>
+	<div class="param">
+		<span>Charge:</span>
+		<input id="chargeValueIn" type="range" min="50" max="1000" name="charge" value="350" oninput="chargeValueOut.value = chargeValueIn.value*(-1);">
+		<output id="chargeValueOut">-350</output>
+	</div>
+	<div class="param">
+		<button type="button" id="myBtn" onclick="download()">Download</button>
+	</div>
+</form>
+<div id="graph"></div>
+<script>
+
+// get the data
+links = [	{source:"Aves",target:"Amphibia",value:0.333652535220412},
+	{source:"Lepidosauria",target:"Amphibia",value:0.164302408621697},
+	{source:"Mammalia",target:"Amphibia",value:0.350110368110108},
+	{source:"cla_of_Archelosauria",target:"Amphibia",value:0.353453872622216},
+	{source:"cla_of_Archosauria",target:"Amphibia",value:0.133626566253327},
+	{source:"Amphibia",target:"Aves",value:0.0344787874284865},
+	{source:"Lepidosauria",target:"Aves",value:0.0952331419230892},
+	{source:"Mammalia",target:"Aves",value:0.131261609332045},
+	{source:"cla_of_Archelosauria",target:"Aves",value:0.499570653731438},
+	{source:"cla_of_Archosauria",target:"Aves",value:0.492492012779553},
+	{source:"Amphibia",target:"Lepidosauria",value:0.0556076017130621},
+	{source:"Aves",target:"Lepidosauria",value:0.357886108137045},
+	{source:"Mammalia",target:"Lepidosauria",value:0.112402971092077},
+	{source:"cla_of_Archelosauria",target:"Lepidosauria",value:0.535507561563169},
+	{source:"cla_of_Archosauria",target:"Lepidosauria",value:0.19697704764454},
+	{source:"Amphibia",target:"Mammalia",value:0.166395780943447},
+	{source:"Aves",target:"Mammalia",value:0.460952428264375},
+	{source:"Lepidosauria",target:"Mammalia",value:0.150851599847431},
+	{source:"cla_of_Archelosauria",target:"Mammalia",value:0.453399604406356},
+	{source:"cla_of_Archosauria",target:"Mammalia",value:0.19633070898515},
+	{source:"Amphibia",target:"cla_of_Archelosauria",value:0.0208386680702954},
+	{source:"Aves",target:"cla_of_Archelosauria",value:0.352549055870117},
+	{source:"Lepidosauria",target:"cla_of_Archelosauria",value:0.144329530258627},
+	{source:"Mammalia",target:"cla_of_Archelosauria",value:0.0443008412287431},
+	{source:"cla_of_Archosauria",target:"cla_of_Archelosauria",value:0.582626777060161},
+	{source:"Amphibia",target:"cla_of_Archosauria",value:0.00759456457829751},
+	{source:"Aves",target:"cla_of_Archosauria",value:0.417962370157444},
+	{source:"Lepidosauria",target:"cla_of_Archosauria",value:0.0426438884170641},
+	{source:"Mammalia",target:"cla_of_Archosauria",value:0.0239106291239302},
+	{source:"cla_of_Archelosauria",target:"cla_of_Archosauria",value:0.635542562226432},
+];
+
+var threshold = 0.1;
+var linkDistanceValue = 100;
+var chargeValue = -350;
+var focus_node = null, highlight_node = null;
+var highlight_color = "blue";
+var highlight_trans = 0.1;
+var text_center = false;
+var outline = false;
+var default_node_color = "#ccc";
+var nominal_stroke = 1.5;
+var nominal_text_size = 10;
+draw();
+
+function draw(){
+
+	var nodes = {};
+	var tempLinks =[];
+	var linkedByIndex = {};
+	// Compute the distinct nodes from the links.
+	links.forEach(function(link) {
+		if (link.value >= threshold){
+			var cloneLink = $.extend(true, {}, link);
+			tempLinks.push(cloneLink);
+			linkedByIndex[link.source + "," + link.target] = true;
+		}
+	});
+	tempLinks.forEach(function(link) {
+		link.source = nodes[link.source] || 
+			(nodes[link.source] = {name: link.source});
+		link.target = nodes[link.target] || 
+			(nodes[link.target] = {name: link.target});
+		link.value = +link.value;
+	});
+	function isConnected(a, b) {
+        return linkedByIndex[b.name + "," + a.name]|| a.name == b.name;// || linkedByIndex[a.name + "," + b.name];
+    }
+
+	function hasConnections(a) {
+		for (var property in linkedByIndex) {
+				s = property.split(",");
+				if ((s[0] == a.name || s[1] == a.name) && linkedByIndex[property])
+				return true;
+		}
+	return false;
+	}
+	
+	var width = 1200,
+		height= 800;
+
+	var force = d3.layout.force()
+		.nodes(d3.values(nodes))
+		.links(tempLinks)
+		.size([width, height])
+		.linkDistance(linkDistanceValue)
+		.charge(chargeValue)
+		.on("tick", tick)
+		.start();
+
+	// Set the range
+	var  v = d3.scale.linear().range([0, 100]);
+	
+	// Scale the range of the data
+	v.domain([d3.min(tempLinks, function(d) { return d.value; }), d3.max(tempLinks, function(d) { return d.value; })]);
+	// asign a type per value to encode opacity
+	tempLinks.forEach(function(link) {
+		if (v(link.value) <= 25) {
+			link.type = "twofive";
+		} else if (v(link.value) <= 50 && v(link.value) > 25) {
+			link.type = "fivezero";
+		} else if (v(link.value) <= 75 && v(link.value) > 50) {
+			link.type = "sevenfive";
+		} else if (v(link.value) <= 100 && v(link.value) > 75) {
+			link.type = "onezerozero";
+		}
+	});
+	
+	var css = {
+		twofive:"#bcbcbc",
+		fivezero:"#3366ff",
+		sevenfive:"#00cc00",
+		onezerozero:"#ff0000",
+	};
+	
+	var svg = d3.select("div#graph").append("svg")
+		.attr("width", width)
+		.attr("height", height)
+		.attr("id", "graphResult");
+	var div = d3.select("body").append("div")	
+	    .attr("class", "tooltip")				
+	    .style("opacity", 0);
+	// build the arrow.
+	svg.append("svg:defs").selectAll("marker")
+		.data(["end"])      // Different link/path types can be defined here
+	  .enter().append("svg:marker")    // This section adds in the arrows
+		.attr("id", String)
+		.attr("viewBox", "0 -5 10 10")
+		.attr("refX", 15)
+		.attr("refY", -1.5)
+		.attr("markerWidth", 6)
+		.attr("markerHeight", 6)
+		.attr("orient", "auto")
+	  .append("svg:path")
+		.attr("d", "M0,-5L10,0L0,5");
+
+	// add the links and the arrows
+	var path = svg.append("svg:g").selectAll("path")
+	    .data(force.links())
+	  .enter().append("svg:path")
+	    .attr("marker-end", "url(#end)")
+	    .attr("class", "link")
+	    .style("fill","none")
+	    .style("stroke-width",nominal_stroke)
+	    .style("stroke", function(d) { return css[d.type]; })
+
+	    .on("mouseover", function(d) {		
+	        div.transition()		
+	            .duration(200)		
+	            .style("opacity", .9);		
+	
+	        div.html("<b>source</b>: " + d.source.name +
+	                 "<br><b>target</b>: " + d.target.name +
+	                 "<br><b>value</b>: " + d.value.toFixed(3))	
+	
+	            .style("left", (d3.event.pageX) + "px")		
+	            .style("top", (d3.event.pageY - 28) + "px");	
+	    })					
+
+	    .on("mouseout", function(d) {		
+	        div.transition()		
+	            .duration(500)		
+	            .style("opacity", 0);	
+	    });
+	// define the nodes
+	var node = svg.selectAll(".node")
+		.data(force.nodes())
+	  .enter().append("g")
+		.attr("class", "node")
+		.on("click", click)
+		.on("dblclick", dblclick)
+		.call(force.drag);
+
+	// add the nodes
+	node.append("circle")
+		.attr("r", 5)
+		.attr("style", "fill:#ccc;stroke:#fff;stroke-width:1.5px");
+
+	// add the text 
+	node.append("text")
+		.attr("x", 12)
+		.attr("dy", ".35em")
+		.attr("style", "fill:#000;font:10px sans-serif;pointer-events:none")
+		.text(function(d) { return d.name; });
+	
+	var text = node.selectAll("text")
+		.style("font-size", nominal_text_size + "px");
+	
+	// add the curvy lines
+	function tick() {
+		path.attr("d", function(d) {
+			var dx = d.target.x - d.source.x,
+				dy = d.target.y - d.source.y,
+				dr = Math.sqrt(dx * dx + dy * dy);
+			return "M" + 
+				d.source.x + "," + 
+				d.source.y + "A" + 
+				dr + "," + dr + " 0 0,1 " + 
+				d.target.x + "," + 
+				d.target.y;
+		});
+
+		node
+			.attr("transform", function(d) { 
+				return "translate(" + d.x + "," + d.y + ")"; });
+	}
+	
+	// add legend
+	var legendData = [
+		{pos:0, type:"twofive", value:threshold+" < x < "+v.invert(25).toFixed(2)},
+		{pos:1, type:"fivezero", value:v.invert(25).toFixed(2)+" < x < "+v.invert(50).toFixed(2)},
+		{pos:2, type:"sevenfive", value:v.invert(50).toFixed(2)+" < x < "+v.invert(75).toFixed(2)},
+		{pos:3, type:"onezerozero", value:v.invert(75).toFixed(2)+" < x < "+v.invert(100).toFixed(2)},
+	];
+	
+	svg.append("svg:g").selectAll("path")
+		.attr("class", "legend")
+		.data(legendData)
+	  .enter().append("svg:path")    // This section adds in the arrows
+		.attr("style", function(d){
+			return "fill:none;stroke-width:1.5px;stroke:" + css[d.type];
+		})
+		.attr("d", function(d){
+			var position = 20 + (d.pos*20);
+			return "M 10 "+position+" l 25 0";
+		});
+	svg.append("svg:g").selectAll("text")
+		.attr("class", "legend")
+		.data(legendData)
+	  .enter().append("svg:text")
+		.attr("x", "45")
+		.attr("y", function(d){
+			return 25 + (d.pos*20);
+		})
+		.attr("style", "fill:#000;font:10px sans-serif;pointer-events:none")
+		.text(function(d){
+			return d.value;
+		});
+		
+	
+	var tocolor = "fill";
+	var towhite = "stroke";
+	if (outline) {
+		tocolor = "stroke"
+		towhite = "fill"
+	}
+	
+	var circle = node.append("path")
+      .attr("d", d3.svg.symbol()
+        //.size(function(d) { return Math.PI*Math.pow(size(d.size)||nominal_base_node_size,2); })
+        .type(function(d) { return d.type; }))
+	.style(tocolor, function(d) { 
+		if (isNumber(d.score) && d.score>=0) return color(d.score);
+		else return default_node_color; 
+	})
+    //.attr("r", function(d) { return size(d.size)||nominal_base_node_size; })
+	.style("stroke-width", nominal_stroke)
+	.style(towhite, "white");
+	
+	node.on("mouseover", function(d) {
+		set_highlight(d);
+		})
+		.on("mousedown", function(d) { d3.event.stopPropagation();
+			focus_node = d;
+			set_focus(d)
+			if (highlight_node === null) set_highlight(d)
+		
+		})
+		.on("mouseout", function(d) {
+			exit_highlight();
+		});
+
+	d3.select(window).on("mouseup",  
+		function() {
+			if (focus_node!==null){
+				focus_node = null;
+				if (highlight_trans<1){
+					circle.style("opacity", 1);
+					text.style("opacity", 1);
+					path.style("opacity", 1);
+				}
+			}
+			if (highlight_node === null) exit_highlight();
+		});
+		
+	function exit_highlight(){
+		highlight_node = null;
+		if (focus_node===null){
+			//svg.style("cursor","move");
+			if (highlight_color!="white"){
+				circle.style(towhite, "white");
+				text.style("font-weight", "normal");
+				//path.style("stroke", function(o) {return (isNumber(o.score) && o.score>=0)?color(o.score):default_link_color});
+			}
+		}
+	}
+
+	function set_focus(d){	
+		if (highlight_trans<1){
+			circle.style("opacity", function(o) {
+				return isConnected(d, o) ? 1 : highlight_trans;
+			});
+
+			text.style("opacity", function(o) {
+				return isConnected(d, o) ? 1 : highlight_trans;
+			});
+			path.style("opacity", function(o) {
+				//return o.source.index == d.index || o.target.index == d.index ? 1 : highlight_trans;
+				return o.target.index == d.index ? 1 : highlight_trans;
+			});		
+		}
+	}
+
+
+	function set_highlight(d){
+		//svg.style("cursor","pointer");
+		if (focus_node!==null) d = focus_node;
+		highlight_node = d;
+
+		if (highlight_color!="white"){
+			  circle.style(towhite, function(o) {
+					return isConnected(d, o) ? highlight_color : "white";});
+				text.style("font-weight", function(o) {
+					return isConnected(d, o) ? "bold" : "normal";});
+				//path.style("stroke", function(o) {
+				//  return o.source.index == d.index || o.target.index == d.index ? highlight_color : ((isNumber(o.score) && o.score>=0)?color(o.score):default_link_color);
+				//});
+		}
+	}
+};	
+
+
+ 	
+
+	
+// action to take on mouse click
+function click() {
+    d3.select(this).select("text").transition()
+        .duration(750)
+     d3.select(this).select("circle").transition()
+        .duration(750)
+}
+
+// action to take on mouse double click
+function dblclick() {
+    d3.select(this).select("circle").transition()
+        .duration(750)
+    d3.select(this).select("text").transition()
+        .duration(750)
+}
+
+$( "form" ).change(function( event ) {
+	var inthreshold = $( "input#thresholdValueIn" ).val();
+	inthreshold = inthreshold/100;
+	threshold = inthreshold;
+	
+	linkDistanceValue = $( "input#linkValueIn" ).val();
+		
+	chargeValue = $( "input#chargeValueIn" ).val()*(-1);
+	
+	$( "svg#graphResult").remove();
+	draw();
+    return false;
+});
+
+function updateTextThreshold(val) {
+	val = val/100;
+	document.getElementById("thresholdText").value=val; 
+}
+function download(){
+
+    // pegar SVG
+    var svg = document.getElementById("graphResult");
+
+    // serializar
+    var serializer = new XMLSerializer();
+    var source = serializer.serializeToString(svg);
+
+    // adicionar namespace SVG
+    if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
+        source = source.replace(
+            /^<svg/,
+            "<svg xmlns=\"http://www.w3.org/2000/svg\""
+        );
+    }
+
+    // adicionar namespace xlink
+    if(!source.match(/^<svg[^>]+\"http\:\/\/www\.w3\.org\/1999\/xlink\"/)){
+        source = source.replace(
+            /^<svg/,
+            "<svg xmlns:xlink=\"http://www.w3.org/1999/xlink\""
+        );
+    }
+
+    // declaração XML
+    source = "<?xml version=\"1.0\" standalone=\"no\"?>\r\n" + source;
+
+    // criar blob
+    var blob = new Blob([source], {
+        type: "image/svg+xml;charset=utf-8"
+    });
+
+    // criar URL
+    var url = URL.createObjectURL(blob);
+
+    // criar link
+    var link = document.createElement("a");
+
+    link.href = url;
+    link.download = "ELDOgraph.svg";
+
+    document.body.appendChild(link);
+
+    // iniciar download
+    link.click();
+
+    // limpar
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}	
+//});
+
+</script>
+</body>
+</html>
