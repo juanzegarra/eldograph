@@ -42,6 +42,15 @@ text {
   pointer-events: none;
 }
 
+#sugestoes {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
 div.param {
 	float:left;
 	margin:10px;
@@ -103,12 +112,12 @@ div#graph {
 	<div class="param" style="background:#FFF">
 		<button type="button" id="myBtn" onclick="download()">Download</button>
 	</div>
-	<div class="textbox" id="busca" style="background:#FFF;">
+	<div class="textbox" id="busca-box" style="background:#FFF;">
 	    <label for="busca">Clade:</label>
 		<input type="text" id="busca" placeholder="Type your clade...">
 	    <div id="sugestoes"></div>
 	</div>
-	<div class="textbox" id="depth_n" placeholder="0" style="border: 1px solid #ccc; padding: 8px; width: 200px;">
+	<div class="textbox" id="depth_n-box" placeholder="0" style="border: 1px solid #ccc; padding: 8px; width: 200px;">
         <input type="number" min="0" id="depth_n">
         <label for="depth_n">Depth of search:</label>
 	</div>
@@ -118,6 +127,8 @@ div#graph {
 </form>
 <div id="graph"></div>
 <script>
+
+var links;
 
 // get the data
 const files = ["class_results_0.05.json", "family_results_0.05.json",
@@ -143,6 +154,8 @@ const listaSugestoes = document.getElementById("sugestoes");
 const profundidade = document.getElementById("depth_n");
 let itemSelecionado = null;
 
+
+
 taxon_file.addEventListener("input", () => {
 
   d3.json(taxon_file.value, function(error, data) {
@@ -159,7 +172,22 @@ taxon_file.addEventListener("input", () => {
   });
 });
 
+$("form").change(function(event) {
+    ...
+    if (!links) {
+        console.warn("No data loaded yet — select a taxon level first.");
+        return false;
+    }
+    draw(links);
+    return false;
+});
+
 input.addEventListener("input", () => {
+
+  if(!links) {
+    console.warn("No data loaded yet — select a taxon level first.");
+    return;
+  }
 
     const termo = input.value.toLowerCase().trim();
 
@@ -202,7 +230,7 @@ input.addEventListener("input", () => {
 
 // fecha a lista se clicar fora
 document.addEventListener("click", (e) => {
-if (!document.getElementById("busca").contains(e.target)) {
+if (!document.getElementById("busca-box").contains(e.target)) {
   listaSugestoes.innerHTML = "";
 }
 });
