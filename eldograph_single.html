@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <head>
 <meta charset="utf-8">
-<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <style>
 
 
@@ -41,9 +41,14 @@ text {
   font: 10px sans-serif;
   pointer-events: none;
 }
-
+#busca-box {
+	position: relative;
+}
 #sugestoes {
   position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
   background: white;
   border: 1px solid #ccc;
   max-height: 150px;
@@ -51,6 +56,9 @@ text {
   z-index: 10;
 }
 
+#sugestoes div.suggestion-item.active {
+  background: #d0e5ff;
+}
 div.param {
 	float:left;
 	margin:10px;
@@ -73,7 +81,7 @@ div#graph {
 
     <div class="dropdown-container">
       <label for="taxon_level">Choose taxon level and cutoff:</label>
-      <select name="taxon" id="taxon" onchange="taxon_file=taxon.value">
+      <select name="taxon" id="taxon">
         <option value="genus_results_0.05.json">Genus 0.5</option>
         <option value="genus_results_0.1.json">Genus 0.1</option>
         <option value="genus_results_0.json">Genus 0</option>
@@ -112,9 +120,9 @@ div#graph {
 	<div class="param" style="background:#FFF">
 		<button type="button" id="myBtn" onclick="download()">Download</button>
 	</div>
-	<div class="textbox" id="busca-box" style="background:#FFF;">
+	<div class="textbox" id="busca-box" style="background:#FFF;" autocomplete="new-password" name="busca_clade_xyz" >
 	    <label for="busca">Clade:</label>
-		<input type="text" id="busca" placeholder="Type your clade..." oninput="input=busca.value">
+		<input type="text" id="busca" placeholder="Type your clade...">
 	    <div id="sugestoes"></div>
 	</div>
 	<div class="textbox" id="depth_n-box" placeholder="0" style="border: 1px solid #ccc; padding: 8px; width: 200px;">
@@ -122,7 +130,7 @@ div#graph {
         <label for="depth_n">Depth of search:</label>
 	</div>
 	<div class="button">
-	<button id="run" >Generate Graph</button>
+	<button id="run" type="button">Generate Graph</button>
 	</div>
 </form>
 <div id="graph"></div>
@@ -148,43 +156,52 @@ var nominal_stroke = 1.5;
 var nominal_text_size = 10;
 var json_file = null
 
-const taxon_file = document.getElementById("taxon")
-const input = document.getElementById("busca");
-const listaSugestoes = document.getElementById("sugestoes");
-const profundidade = document.getElementById("depth_n");
+var input = document.getElementById("busca");
+var listaSugestoes = document.getElementById("sugestoes");
+var profundidade = document.getElementById("depth_n");
 let itemSelecionado = null;
+var activeIndex = -1;
 
+var taxonSelect = document.getElementById("taxon"); // the element, never reassigned
+let selectedTaxonFile = taxonSelect.value;             // the string value
 
-
-taxon_file.addEventListener("input", () => {
-
-  d3.json(taxon_file.value, function(error, data) {
-
-      if (error) {
-          console.log(error);
-          return;
-      }
-
-      links = data;
-
-      console.log(links);
-      console.warn("Data loaded successfully.")
-
-  });
+taxonSelect.addEventListener("change", () => {
+  selectedTaxonFile = taxonSelect.value;
+  get_taxon_file(taxonSelect);
 });
 
+taxonSelect.dispatchEvent(new Event("change"));
+
+
+function get_taxon_file(taxon_file){
+
+      d3.json(taxon_file.value, function(error, data) {
+
+          if (error) {
+              console.error("Error loading JSON:", error);
+              return;
+          }
+
+          links = data;
+
+          console.log("Loaded:", links);
+          console.warn("Data loaded successfully.");
+
+      });
+
+}
+
 $("form").change(function(event) {
-    ...
+
     if (!links) {
         console.warn("No data loaded yet — select a taxon level first.");
         return false;
     }
-    draw(links);
-    return false;
 });
 
 input.addEventListener("input", () => {
-
+  itemSelecionado = null;
+  activeIndex = -1;
   if(!links) {
     console.warn("No data loaded yet — select a taxon level first.");
     return;
@@ -197,7 +214,7 @@ input.addEventListener("input", () => {
     // Always show "All"
     const allOption = document.createElement("div");
     allOption.textContent = "All";
-
+    allOption.classList.add("suggestion-item");
     allOption.addEventListener("click", () => {
         itemSelecionado = "all";
         input.value = "All";
@@ -207,26 +224,26 @@ input.addEventListener("input", () => {
 
     listaSugestoes.appendChild(allOption);
 
-    if (termo === "") return;
+    var filtrados = [];
+    var sources = new Set();
 
-    const filtrados = links.filter(link =>
-        link.source.toLowerCase().includes(termo)
-    );
+    links.forEach(link => {
+        if (
+            link.source.toLowerCase().startsWith(termo) &&
+            !sources.has(link.source)
+        ) {
+            sources.add(link.source);
+            filtrados.push(link);
+        }
+    });
 
     filtrados.forEach(item => {
         const div = document.createElement("div");
-
         div.textContent = item.source;
-
-        div.addEventListener("click", () => {
-            itemSelecionado = item;
-            input.value = item.source;
-            listaSugestoes.innerHTML = "";
-
-        });
-
+        div.classList.add("suggestion-item");
+        div.addEventListener("click", () => { itemSelecionado = item.source; input.value = item.source; listaSugestoes.innerHTML = ""; });
         listaSugestoes.appendChild(div);
-    });
+      });
 });
 
 // fecha a lista se clicar fora
@@ -236,66 +253,91 @@ if (!document.getElementById("busca-box").contains(e.target)) {
 }
 });
 
+input.addEventListener("keydown", (e) => {
+  var items = listaSugestoes.querySelectorAll(".suggestion-item");
+  if (items.length === 0) return;
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    activeIndex = (activeIndex + 1) % items.length;
+    highlightActive(items);
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    activeIndex = (activeIndex - 1 + items.length) % items.length;
+    highlightActive(items);
+  } else if (e.key === "Enter") {
+    e.preventDefault(); // stop the form from submitting on Enter — same reload issue as the button
+    if (activeIndex >= 0 && activeIndex < items.length) {
+      items[activeIndex].click(); // reuses your existing click handler logic
+    }
+  } else if (e.key === "Escape") {
+    listaSugestoes.innerHTML = "";
+    activeIndex = -1;
+  }
+});
+
+function highlightActive(items) {
+  items.forEach((item, i) => {
+    item.classList.toggle("active", i === activeIndex);
+  });
+  if (activeIndex >= 0) {
+    items[activeIndex].scrollIntoView({ block: "nearest" });
+  }
+}
+
 var run_command = document.getElementById("run")
 
 
 //só rodar se entradas estarem certas
-run_command.addEventListener("click", ()=>{
-  if(profundidade.value > 0 && itemSelecionado && files.includes(taxon_file.value)){
-    var links;
-        //filtrar ou não filtrar
-        if(itemSelecionado === "all"){
-          draw(links)
-        }
-        else{
-          var new_nodes = getSubgraph(itemSelecionado, profundidade, links)
-          var new_links = get_new_links(new_nodes, links)
-          draw(new_links)
-        }
-  };
-})
+
+run_command.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  console.log("Generating for:", itemSelecionado, "depth:", profundidade.value);
+
+   if (!itemSelecionado) {
+     console.warn("No clade selected — click a suggestion from the dropdown first.");
+     return;
+   }
+
+  if (!itemSelecionado) return;
+
+  if (itemSelecionado === "all") {
+    draw(links);
+  } else if (profundidade.value > 0) {
+    var new_nodes = getSubgraph(itemSelecionado, Number(profundidade.value), links);
+    var new_links = get_new_links(new_nodes, links);
+    draw(new_links);
+  }
+    else if (profundidade.value == 0) {
+      var new_links = shallow_search(links, itemSelecionado);
+      draw(new_links);
+    }
+});
 
 
 //funcao de breadth based search
 
 function getSubgraph(startNode, maxDepth, links) {
-
     var visited = new Set();
     var queue = [];
-
     visited.add(startNode);
-    queue.push({
-        node: startNode,
-        depth: 0
-    });
+    queue.push({ node: startNode, depth: 0 });
 
     while (queue.length > 0) {
-
         var current = queue.shift();
-
-        if (current.depth >= maxDepth) {
-            continue;
-        }
+        if (current.depth >= maxDepth) continue;
 
         links.forEach(function(link) {
+            if (link.value < threshold) return; // skip weak edges — same cutoff as draw()
 
             var neighbor = null;
-
-            if (link.source === current.node) {
-                neighbor = link.target;
-            }
-            else if (link.target === current.node) {
-                neighbor = link.source;
-            }
+            if (link.source === current.node) neighbor = link.target;
+            else if (link.target === current.node) neighbor = link.source;
 
             if (neighbor !== null && !visited.has(neighbor)) {
-
                 visited.add(neighbor);
-
-                queue.push({
-                    node: neighbor,
-                    depth: current.depth + 1
-                });
+                queue.push({ node: neighbor, depth: current.depth + 1 });
             }
         });
     }
@@ -304,14 +346,25 @@ function getSubgraph(startNode, maxDepth, links) {
 }
 
 function get_new_links(visible_Nodes, links){
-  var visibleLinks = links.filter(function(link) {
-
-      return visible_Nodes.has(link.source) &&
-             visibleNodes.has(link.target);
-
+  var visibleLinks = [];
+  links.forEach(function(link) {
+    if (visible_Nodes.has(link.source) && visible_Nodes.has(link.target)) {
+      visibleLinks.push(link);
+    }
   });
 
+  console.debug("visibleLinks", visibleLinks)
   return visibleLinks;
+}
+
+function shallow_search(links, target) {
+  var new_links = [];
+  links.forEach(function(link) {
+    if (link.source === target || link.target === target) {
+      new_links.push(link);
+    }
+  });
+  return new_links;
 }
 
 function draw(links){
@@ -334,6 +387,14 @@ function draw(links){
 			(nodes[link.target] = {name: link.target});
 		link.value = +link.value;
 	});
+
+	if (itemSelecionado && itemSelecionado !== "all" && nodes[itemSelecionado]) {
+    var targetNode = nodes[itemSelecionado];
+    targetNode.x = targetNode.px = width / 2;
+    targetNode.y = targetNode.py = height / 2;
+    targetNode.fixed = true;
+	}
+
 	function isConnected(a, b) {
         return linkedByIndex[b.name + "," + a.name]|| a.name == b.name;// || linkedByIndex[a.name + "," + b.name];
     }
@@ -353,7 +414,7 @@ function draw(links){
 
 	setTimeout(function() {
     force.stop();
-	}, 0001);
+	}, 2000);
 
 	// Set the range
 	var  v = d3.scale.linear().range([0, 100]);
@@ -385,6 +446,18 @@ function draw(links){
 		.attr("height", height)
 		.attr("id", "graphResult");
 
+	var container = svg.append("g").attr("class", "zoom-layer");
+
+	var zoom = d3.behavior.zoom()
+    .scaleExtent([0.1, 8])
+    .on("zoom", function() {
+        container.attr("transform",
+            "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+    });
+
+	svg.call(zoom);
+	svg.on("dblclick.zoom", null);
+
 	// build the arrow.
 	svg.append("svg:defs").selectAll("marker")
 		.data(["end"])      // Different link/path types can be defined here
@@ -400,7 +473,7 @@ function draw(links){
 		.attr("d", "M0,-5L10,0L0,5");
 
 	// add the links and the arrows
-	var path = svg.append("svg:g").selectAll("path")
+	var path = container.append("svg:g").selectAll("path")
 		.data(force.links())
 	  .enter().append("svg:path")
 		//.attr("style", function(d) { return "fill:none;stroke-width:1.5px;" + css[d.type]; })
@@ -410,8 +483,25 @@ function draw(links){
 		.style("stroke-width",nominal_stroke)
 		.style("stroke", function(d) { return css[d.type]; });
 
+	function zoomToFit(padding) {
+        padding = padding || 40;
+        var bounds = container.node().getBBox();
+        if (bounds.width === 0 || bounds.height === 0) return;
+
+        var scale = Math.min(
+            (width - padding * 2) / bounds.width,
+            (height - padding * 2) / bounds.height,
+            2 // don't zoom in past 2x even for tiny graphs
+        );
+        var midX = bounds.x + bounds.width / 2;
+        var midY = bounds.y + bounds.height / 2;
+        var translate = [width / 2 - scale * midX, height / 2 - scale * midY];
+
+        svg.transition().duration(500)
+            .call(zoom.translate(translate).scale(scale).event);
+   	}
 	// define the nodes
-	var node = svg.selectAll(".node")
+	var node = container.selectAll(".node")
 		.data(force.nodes())
 	  .enter().append("g")
 		.attr("class", "node")
@@ -435,6 +525,7 @@ function draw(links){
 		.style("font-size", nominal_text_size + "px");
 
 	// add the curvy lines
+	var settled = false;
 	function tick() {
 		path.attr("d", function(d) {
 			var dx = d.target.x - d.source.x,
@@ -448,9 +539,15 @@ function draw(links){
 				d.target.y;
 		});
 
-		node
-			.attr("transform", function(d) {
-				return "translate(" + d.x + "," + d.y + ")"; });
+		node.attr("transform", function(d) {
+        return "translate(" + d.x + "," + d.y + ")"; });
+
+    if (!settled && force.alpha() < 0.02) {
+        settled = true;
+        force.stop();
+        zoomToFit();
+    };
+
 	}
 
 
@@ -609,7 +706,6 @@ $( "form" ).change(function( event ) {
 	chargeValue = $( "input#chargeValueIn" ).val()*(-1);
 
 	$( "svg#graphResult").remove();
-	draw(links);
     return false;
 });
 
