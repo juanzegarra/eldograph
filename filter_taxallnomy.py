@@ -1,5 +1,6 @@
 from collections import defaultdict
 import sys
+import re
 
 '''
 #1 1       #2 Dom_in_root     #3 Rea_in_root     #4 Kin_in_root     #5 sbKin_in_root   #6 spPhy_in_root   #7 Phy_in_root
@@ -11,10 +12,16 @@ import sys
 # #42 Iso_in_root
 '''
 
-# Use in lin_name table returned by taxallnomy
-taxallnomy_file = sys.argv[1]
-taxon_level = sys.argv[2]
-list_of_taxa = sys.argv[3:]
+def get_taxa_list(files):
+    taxa = set()
+    pattern =  r'"(?:source|target)":\s*"([^"]+)"'
+    for file in files:
+        with open(file, "r") as fin:
+            for line in fin:
+                match = re.search(pattern, line)
+                if match:
+                    taxa.add(match.group(1))
+    return taxa
 
 map_of_taxa = {"family": 21, "genus" : 25, "class": 10,
     "order": 16, "spORDER": 15, "phylum": 7, "kingdom": 4}
@@ -30,3 +37,16 @@ def filter_taxallnomy(taxallnomy_file):
                 if fields[map_of_taxa[taxon_level]] == taxa:
                     taxa_to_write[taxa] = fields[:map_of_taxa[taxon_level]]
                     break
+
+def write_json(taxa_to_write):
+    import json
+    with open(f"taxa_to_write_{taxon_level}.json", "w") as fout:
+        json.dump(taxa_to_write, fout)
+
+# Use in lin_name table returned by taxallnomy
+taxallnomy_file = sys.argv[1]
+taxon_level = sys.argv[2]
+taxon_files = sys.argv[3:]
+list_of_taxa = get_taxa_list(taxon_files)
+filter_taxallnomy(taxallnomy_file)
+write_json(taxa_to_write)
