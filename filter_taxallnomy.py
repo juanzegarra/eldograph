@@ -1,3 +1,8 @@
+map_of_taxa = {"family": 21, "genus" : 25, "class": 10,
+    "order": 16, "spORDER": 15, "phylum": 7, "kingdom": 4}
+
+
+
 from collections import defaultdict
 import sys
 import re
@@ -12,6 +17,9 @@ import re
 # #42 Iso_in_root
 '''
 
+map_of_taxa = {"family": 21, "genus" : 25, "class": 10,
+    "order": 16, "spORDER": 15, "phylum": 7, "kingdom": 4}
+
 def get_taxa_list(files):
     taxa = set()
     pattern =  r'"(?:source|target)":\s*"([^"]+)"'
@@ -22,10 +30,6 @@ def get_taxa_list(files):
                 if match:
                     taxa.add(match.group(1))
     return taxa
-
-map_of_taxa = {"family": 21, "genus" : 25, "class": 10,
-    "order": 16, "spORDER": 15, "phylum": 7, "kingdom": 4}
-taxa_to_write = {taxa: [] for taxa in list_of_taxa}
 
 def filter_taxallnomy(taxallnomy_file):
     with open(taxallnomy_file, "r") as fin:
@@ -48,5 +52,6 @@ taxallnomy_file = sys.argv[1]
 taxon_level = sys.argv[2]
 taxon_files = sys.argv[3:]
 list_of_taxa = get_taxa_list(taxon_files)
+taxa_to_write = {taxa: [] for taxa in list_of_taxa}
 filter_taxallnomy(taxallnomy_file)
 write_json(taxa_to_write)

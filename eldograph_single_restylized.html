@@ -236,6 +236,20 @@ button:active {
   background: #eef1fd;
 }
 
+#taxon-color-container {
+  margin-bottom: 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+  max-width: 280px;
+}
+
+#taxon-color-container select {
+  width: 100%;
+}
+
 div#graph {
   margin: 0;
   padding: 6px;
@@ -245,6 +259,36 @@ div#graph {
   box-shadow: var(--shadow);
   display: inline-block;
   overflow: auto;
+}
+
+div#table {
+  margin-top: 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 16px;
+  max-width: 420px;
+}
+
+div#table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+div#table th,
+div#table td {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+div#table th {
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 /* --- graph elements --- */
@@ -339,15 +383,40 @@ text {
 	<button id="run" type="button">▶ Generate Graph</button>
 	</div>
 </form>
+<div class="dropdown-container" id="taxon-color-container">
+	<label for="taxon_select_box">Colour nodes by ancestor level</label>
+	<div id="sugestoes_taxons">
+		<select id="taxon_select_box">
+			<option value="">— none —</option>
+		</select>
+	</div>
+</div>
 <div id="graph"></div>
+<div id="table"></div>
 <script>
 
 var links;
 
 // get the data
-const files = ["class_results_0.05.json", "family_results_0.05.json",
-          "genero_results_0.05.json", "class_results_0.1.json",
-          "family_results_0.1.json", "order_results_0.05.json"]
+// NOTE: keys here must match the <option value="..."> list in the #taxon
+// select exactly, or lookups below silently return undefined.
+const files = {
+   "genus_results_0.05.json" : "genus",
+   "genus_results_0.1.json" : "genus",
+   "genus_results_0.json" : "genus",
+   "family_results_0.05.json" : "family",
+   "family_results_0.1.json" : "family",
+   "family_results_0.json" : "family",
+   "class_results_0.05.json" : "class",
+   "class_results_0.1.json" : "class",
+   "class_results_0.json" : "class",
+   "order_results_0.05.json" : "order",
+   "order_results_0.1.json" : "order",
+   "order_results_0.json" : "order",
+   "spORDER_results_0.05.json" : "spORDER",
+   "spORDER_results_0.1.json" : "spORDER",
+   "spORDER_results_0.json" : "spORDER"
+};
 
 var threshold = 0.1;
 var linkDistanceValue = 100;
@@ -361,17 +430,54 @@ var default_node_color = "#ccc";
 var nominal_stroke = 1.5;
 var nominal_text_size = 10;
 var json_file = null
+var table = document.getElementById("table");
+
+// Kept so a change to the "color by ancestor" dropdown can recolor the
+// graph that's already on screen, without having to redraw it.
+var lastCircleSelection = null;
+var lastTocolor = "fill";
 
 var input = document.getElementById("busca");
 var listaSugestoes = document.getElementById("sugestoes");
+var listaSugestoesTaxon = document.getElementById("taxon_select_box");
 var profundidade = document.getElementById("depth_n");
 let itemSelecionado = null;
 var activeIndex = -1;
 
 var taxonSelect = document.getElementById("taxon"); // the element, never reassigned
 let selectedTaxonFile = taxonSelect.value;             // the string value
+const taxon_columns = {
+  "family": 21,
+  "genus": 25,
+  "class": 10,
+  "order": 16,
+  "spORDER": 15,
+  "phylum": 7,
+  "kingdom": 4
+};
+// Ordered broad -> narrow, matching the column numbers in taxon_columns
+// (kingdom=4 < phylum=7 < class=10 < spORDER=15 < order=16 < family=21 < genus=25).
+// Used to figure out which levels are "ancestors" of whichever level is
+// currently loaded (so we only offer to color by levels that are
+// actually broader than the current one).
+const taxon_levels = ["kingdom", "phylum", "class", "spORDER", "order", "family", "genus"];
+var taxon_level = null;
+var superiorTaxonLevelsToDisplay = null;
 
+// Coloring-by-ancestor state
+var colorByTaxon = null;         // currently selected ancestor level, e.g. "family"
+var ancestorMap = {};            // node name -> ancestor name, for colorByTaxon
+var taxonomyLineage = null;      // raw taxa_to_write_<level>.json: node name -> [id, ancestor names... broad to narrow]
+var taxonColorScale = d3.scale.category20();
+
+// Get file with nodes from the selected taxon file, then (once loaded)
+// fetch the matching taxonomy-lineage lookup and figure out which
+// ancestor levels are available for coloring.
 taxonSelect.addEventListener("change", () => {
+  listaSugestoesTaxon.innerHTML = '<option value="">— none —</option>';
+  colorByTaxon = null;
+  ancestorMap = {};
+  taxonomyLineage = null;
   selectedTaxonFile = taxonSelect.value;
   get_taxon_file(taxonSelect);
 });
@@ -392,10 +498,95 @@ function get_taxon_file(taxon_file){
 
           console.log("Loaded:", links);
           console.warn("Data loaded successfully.");
+          taxon_level = files[taxon_file.value];
+
+          if (!taxon_level) {
+            console.warn("No taxon level mapping found for file:", taxon_file.value);
+            return;
+          }
+
+          populateAncestorLevelDropdown();
+          loadTaxonomyLineage(taxon_level);
 
       });
 
 }
+
+// Populate the "color nodes by ancestor level" dropdown with every level
+// broader than the currently loaded one (this only runs once taxon_level
+// is actually known, avoiding the old race condition).
+function populateAncestorLevelDropdown(){
+  listaSugestoesTaxon.innerHTML = '<option value="">— none —</option>';
+
+  const idx = taxon_levels.indexOf(taxon_level);
+  superiorTaxonLevelsToDisplay = idx > 0 ? taxon_levels.slice(0, idx) : [];
+
+  superiorTaxonLevelsToDisplay.forEach((level) => {
+    const opt = document.createElement("option");
+    opt.value = level;
+    opt.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+    listaSugestoesTaxon.appendChild(opt);
+  });
+}
+
+// Loads taxa_to_write_<level>.json — produced by filter_taxallnomy.py —
+// which maps each node name at this level to an array like:
+//   [id, "Domain", "Realm", "Kingdom", ..., "<name at this level>"]
+// The name at any broader rank sits at index (taxon_columns[rank] - 1),
+// since taxon_columns holds 1-indexed column numbers from the taxallnomy
+// table and JS arrays are 0-indexed.
+function loadTaxonomyLineage(level){
+  var lineageFile = "taxa_to_write_" + level + ".json";
+  d3.json(lineageFile, function(error, data) {
+    if (error) {
+      console.error("Could not load taxonomy lineage file:", lineageFile, error);
+      taxonomyLineage = null;
+      return;
+    }
+    taxonomyLineage = data;
+    // in case the user already picked a coloring level before this
+    // finished loading, build the map now instead of waiting for another change
+    if (colorByTaxon) {
+      ancestorMap = buildAncestorMap(colorByTaxon);
+      applyTaxonColoring();
+    }
+  });
+}
+
+// Derives a node-name -> ancestor-name lookup for a given rank from the
+// already-loaded taxonomyLineage data.
+function buildAncestorMap(level){
+  var map = {};
+  if (!taxonomyLineage || !(level in taxon_columns)) return map;
+  var idx = taxon_columns[level] - 1;
+  Object.keys(taxonomyLineage).forEach(function(nodeName){
+    var lineage = taxonomyLineage[nodeName];
+    if (lineage && lineage.length > idx) {
+      map[nodeName] = lineage[idx];
+    }
+  });
+  return map;
+}
+
+// When the user picks an ancestor level, recolor the nodes currently on
+// screen using the already-loaded lineage data (no extra fetch needed).
+listaSugestoesTaxon.addEventListener("change", () => {
+  colorByTaxon = listaSugestoesTaxon.value || null;
+
+  if (!colorByTaxon) {
+    ancestorMap = {};
+    applyTaxonColoring();
+    return;
+  }
+
+  if (!taxonomyLineage) {
+    console.warn("Taxonomy lineage data not loaded yet — try again in a moment.");
+    return;
+  }
+
+  ancestorMap = buildAncestorMap(colorByTaxon);
+  applyTaxonColoring();
+});
 
 $("form").change(function(event) {
 
@@ -405,6 +596,7 @@ $("form").change(function(event) {
     }
 });
 
+// Extract list of taxa inside a given taxon file (e.g. "genus_results_0.1.json")
 input.addEventListener("input", () => {
   itemSelecionado = null;
   activeIndex = -1;
@@ -417,7 +609,7 @@ input.addEventListener("input", () => {
 
     listaSugestoes.innerHTML = "";
 
-    // Always show "All"
+    // Always show "All" (displays all taxa in the file)
     const allOption = document.createElement("div");
     allOption.textContent = "All";
     allOption.classList.add("suggestion-item");
@@ -433,6 +625,7 @@ input.addEventListener("input", () => {
     var filtrados = [];
     var sources = new Set();
 
+    // Filter taxa based on the search term
     links.forEach(link => {
         if (
             link.source.toLowerCase().startsWith(termo) &&
@@ -443,6 +636,7 @@ input.addEventListener("input", () => {
         }
     });
 
+    // Display filtered taxa on susgetoes
     filtrados.forEach(item => {
         const div = document.createElement("div");
         div.textContent = item.source;
@@ -452,13 +646,15 @@ input.addEventListener("input", () => {
       });
 });
 
-// fecha a lista se clicar fora
+// Closes the suggestion when clicking outside the search box
 document.addEventListener("click", (e) => {
 if (!document.getElementById("busca-box").contains(e.target)) {
   listaSugestoes.innerHTML = "";
 }
 });
 
+
+// Handles keyboard navigation within the suggestion list
 input.addEventListener("keydown", (e) => {
   var items = listaSugestoes.querySelectorAll(".suggestion-item");
   if (items.length === 0) return;
@@ -482,6 +678,7 @@ input.addEventListener("keydown", (e) => {
   }
 });
 
+// Highlights the active item in the suggestion list
 function highlightActive(items) {
   items.forEach((item, i) => {
     item.classList.toggle("active", i === activeIndex);
@@ -508,17 +705,19 @@ run_command.addEventListener("click", (e) => {
 
   if (!itemSelecionado) return;
 
+  var new_links;
+
   if (itemSelecionado === "all") {
-    draw(links);
+    new_links = links;
   } else if (profundidade.value > 0) {
     var new_nodes = getSubgraph(itemSelecionado, Number(profundidade.value), links);
-    var new_links = get_new_links(new_nodes, links);
-    draw(new_links);
+    new_links = get_new_links(new_nodes, links);
+  } else {
+    new_links = shallow_search(links, itemSelecionado);
   }
-    else if (profundidade.value == 0) {
-      var new_links = shallow_search(links, itemSelecionado);
-      draw(new_links);
-    }
+
+  draw(new_links);
+  make_table(new_links);
 });
 
 
@@ -551,6 +750,7 @@ function getSubgraph(startNode, maxDepth, links) {
     return visited;
 }
 
+// Filters links to only include those between visible nodes
 function get_new_links(visible_Nodes, links){
   var visibleLinks = [];
   links.forEach(function(link) {
@@ -563,6 +763,7 @@ function get_new_links(visible_Nodes, links){
   return visibleLinks;
 }
 
+// Performs a shallow search to find links connected to the target node
 function shallow_search(links, target) {
   var new_links = [];
   links.forEach(function(link) {
@@ -573,6 +774,45 @@ function shallow_search(links, target) {
   return new_links;
 }
 
+// Creates a table ordered by most-linked nodes, and renders it into #table.
+// (Renamed the local variable so it no longer shadows the global `table`
+// element reference — the old code built the HTML string into a variable
+// called `table` and then did `table.innerHTML = table`, which just set a
+// property on the string and never touched the actual DOM element.)
+function make_table(new_links) {
+  var rows = '<table><tr><th>Node</th><th>Connections</th></tr>';
+  var node_count = {};
+  new_links.forEach(function(link) {
+    node_count[link.source] = (node_count[link.source] || 0) + 1;
+    node_count[link.target] = (node_count[link.target] || 0) + 1;
+  });
+  var sorted = Object.entries(node_count).sort((a, b) => b[1] - a[1]);
+  sorted.forEach(function(entry) {
+    rows += '<tr><td>' + entry[0] + '</td><td>' + entry[1] + '</td></tr>';
+  });
+  rows += '</table>';
+  table.innerHTML = rows;
+}
+
+// Decides a node's fill/stroke color: ancestor-based color takes priority
+// when the user has picked a level and we have an entry for this node,
+// otherwise falls back to the original score-based / default coloring.
+function nodeColor(d) {
+  if (colorByTaxon && ancestorMap[d.name]) {
+    return taxonColorScale(ancestorMap[d.name]);
+  }
+  if (isNumber(d.score) && d.score >= 0) return color(d.score);
+  return default_node_color;
+}
+
+// Recolors the currently drawn graph in place (no redraw / no re-layout)
+// after the "color by ancestor" dropdown changes.
+function applyTaxonColoring() {
+  if (!lastCircleSelection) return;
+  lastCircleSelection.style(lastTocolor, function(d) { return nodeColor(d); });
+}
+
+// Begins to draw the graph
 function draw(links){
 
 	var nodes = {};
@@ -802,13 +1042,15 @@ function draw(links){
       .attr("d", d3.svg.symbol()
         //.size(function(d) { return Math.PI*Math.pow(size(d.size)||nominal_base_node_size,2); })
         .type(function(d) { return d.type; }))
-	.style(tocolor, function(d) {
-		if (isNumber(d.score) && d.score>=0) return color(d.score);
-		else return default_node_color;
-	})
+	.style(tocolor, function(d) { return nodeColor(d); })
     //.attr("r", function(d) { return size(d.size)||nominal_base_node_size; })
 	.style("stroke-width", nominal_stroke)
 	.style(towhite, "white");
+
+	// keep references so the "color by ancestor" dropdown can recolor
+	// this same graph later without a full redraw
+	lastCircleSelection = circle;
+	lastTocolor = tocolor;
 
 	node.on("mouseover", function(d) {
 		set_highlight(d);
