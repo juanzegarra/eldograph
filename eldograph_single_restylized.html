@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <head>
 <meta charset="utf-8">
@@ -325,6 +324,41 @@ text {
   fill: #1f2430;
   font: 10px sans-serif;
   pointer-events: none;
+}
+
+tooltip {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  background: #1f2430;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  max-width: 260px;
+}
+
+tooltip.visible {
+  opacity: 1;
+}
+
+tooltip .tt-title {
+  font-weight: 700;
+  margin-bottom: 3px;
+  color: #fff;
+}
+
+tooltip .tt-row {
+  color: #cbd2e0;
+}
+
+tooltip .tt-row b {
+  color: #fff;
+  font-weight: 600;
 }
 </style>
 </head>
@@ -715,9 +749,8 @@ run_command.addEventListener("click", (e) => {
   } else {
     new_links = shallow_search(links, itemSelecionado);
   }
-
-  draw(new_links);
   make_table(new_links);
+  draw(new_links);
 });
 
 
@@ -775,23 +808,51 @@ function shallow_search(links, target) {
 }
 
 // Creates a table ordered by most-linked nodes, and renders it into #table.
-// (Renamed the local variable so it no longer shadows the global `table`
-// element reference — the old code built the HTML string into a variable
-// called `table` and then did `table.innerHTML = table`, which just set a
-// property on the string and never touched the actual DOM element.)
+
 function make_table(new_links) {
-  var rows = '<table><tr><th>Node</th><th>Connections</th></tr>';
-  var node_count = {};
-  new_links.forEach(function(link) {
-    node_count[link.source] = (node_count[link.source] || 0) + 1;
-    node_count[link.target] = (node_count[link.target] || 0) + 1;
-  });
-  var sorted = Object.entries(node_count).sort((a, b) => b[1] - a[1]);
-  sorted.forEach(function(entry) {
-    rows += '<tr><td>' + entry[0] + '</td><td>' + entry[1] + '</td></tr>';
-  });
-  rows += '</table>';
-  table.innerHTML = rows;
+
+    var node_count = {};
+
+    new_links.forEach(function(link) {
+
+        var source = typeof link.source === "object"
+            ? link.source.name
+            : link.source;
+
+        var target = typeof link.target === "object"
+            ? link.target.name
+            : link.target;
+
+        if (source != null) {
+            node_count[source] = (node_count[source] || 0) + 1;
+        }
+
+        if (target != null) {
+            node_count[target] = (node_count[target] || 0) + 1;
+        }
+    });
+
+    console.log(node_count);
+    var sorted = Object.entries(node_count)
+        .sort(function(a, b) {
+            return b[1] - a[1];
+        });
+
+    var rows =
+        '<table>' +
+        '<tr><th>Node</th><th>Connections</th></tr>';
+
+    sorted.forEach(function(entry) {
+        rows +=
+            '<tr>' +
+            '<td>' + entry[0] + '</td>' +
+            '<td>' + entry[1] + '</td>' +
+            '</tr>';
+    });
+
+    rows += '</table>';
+
+    table.innerHTML = rows;
 }
 
 // Decides a node's fill/stroke color: ancestor-based color takes priority
@@ -815,6 +876,10 @@ function applyTaxonColoring() {
 // Begins to draw the graph
 function draw(links){
 
+	// clear out any previously drawn graph so repeated "Generate Graph"
+	// clicks don't stack multiple <svg> elements on top of each other
+	d3.select("div#graph").selectAll("svg").remove();
+
 	var nodes = {};
 	var tempLinks =[];
 	var linkedByIndex = {};
@@ -833,6 +898,8 @@ function draw(links){
 			(nodes[link.target] = {name: link.target});
 		link.value = +link.value;
 	});
+
+
 
 	if (itemSelecionado && itemSelecionado !== "all" && nodes[itemSelecionado]) {
     var targetNode = nodes[itemSelecionado];
@@ -891,6 +958,9 @@ function draw(links){
 		.attr("width", width)
 		.attr("height", height)
 		.attr("id", "graphResult");
+	var div = d3.select("body").append("div")
+	    .attr("class", "tooltip")
+	    .style("opacity", 0);
 
 	var container = svg.append("g").attr("class", "zoom-layer");
 
@@ -919,7 +989,7 @@ function draw(links){
 		.attr("d", "M0,-5L10,0L0,5");
 
 	// add the links and the arrows
-	var path = container.append("svg:g").selectAll("path")
+	var path = svg.append("svg:g").selectAll("path")
 		.data(force.links())
 	  .enter().append("svg:path")
 		//.attr("style", function(d) { return "fill:none;stroke-width:1.5px;" + css[d.type]; })
@@ -928,24 +998,26 @@ function draw(links){
 		.style("fill","none")
 		.style("stroke-width",nominal_stroke)
 		.style("stroke", function(d) { return css[d.type]; });
+      });
+      .on("mouseover", function(d) {
+	        div.transition()
+	            .duration(200)
+	            .style("opacity", .9);
 
-	function zoomToFit(padding) {
-        padding = padding || 40;
-        var bounds = container.node().getBBox();
-        if (bounds.width === 0 || bounds.height === 0) return;
+	        div.html("<b>source</b>: " + d.source.name +
+	                 "<br><b>target</b>: " + d.target.name +
+	                 "<br><b>value</b>: " + d.value.toFixed(3))
 
-        var scale = Math.min(
-            (width - padding * 2) / bounds.width,
-            (height - padding * 2) / bounds.height,
-            2 // don't zoom in past 2x even for tiny graphs
-        );
-        var midX = bounds.x + bounds.width / 2;
-        var midY = bounds.y + bounds.height / 2;
-        var translate = [width / 2 - scale * midX, height / 2 - scale * midY];
+	            .style("left", (d3.event.pageX) + "px")
+	            .style("top", (d3.event.pageY - 28) + "px");
+	    })
 
-        svg.transition().duration(500)
-            .call(zoom.translate(translate).scale(scale).event);
-   	}
+	    .on("mouseout", function(d) {
+	        div.transition()
+	            .duration(500)
+	            .style("opacity", 0);
+	    });
+
 	// define the nodes
 	var node = container.selectAll(".node")
 		.data(force.nodes())
@@ -969,6 +1041,24 @@ function draw(links){
 
 	var text = node.selectAll("text")
 		.style("font-size", nominal_text_size + "px");
+
+	function zoomToFit(padding) {
+        padding = padding || 40;
+        var bounds = container.node().getBBox();
+        if (bounds.width === 0 || bounds.height === 0) return;
+
+        var scale = Math.min(
+            (width - padding * 2) / bounds.width,
+            (height - padding * 2) / bounds.height,
+            2 // don't zoom in past 2x even for tiny graphs
+        );
+        var midX = bounds.x + bounds.width / 2;
+        var midY = bounds.y + bounds.height / 2;
+        var translate = [width / 2 - scale * midX, height / 2 - scale * midY];
+
+        svg.transition().duration(500)
+            .call(zoom.translate(translate).scale(scale).event);
+   	}
 
 	// add the curvy lines
 	var settled = false;
@@ -1053,17 +1143,37 @@ function draw(links){
 	lastTocolor = tocolor;
 
 	node.on("mouseover", function(d) {
-		set_highlight(d);
-		})
-		.on("mousedown", function(d) { d3.event.stopPropagation();
-			focus_node = d;
-			set_focus(d)
-			if (highlight_node === null) set_highlight(d)
 
-		})
-		.on("mouseout", function(d) {
-			exit_highlight();
-		});
+    set_highlight(d);
+
+    div.transition()
+        .duration(200)
+        .style("opacity", 1);
+
+    div.html("<b>source</b>: " + d.source.name +
+              "<br><b>target</b>: " + d.target.name +
+              "<br><b>value</b>: " + d.value.toFixed(3))
+        .style("left", (d3.event.pageX + 10) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+
+    console.log("Added divs to nodes");
+
+	})
+	.on("mousemove", function() {
+
+    div
+        .style("left", (d3.event.pageX + 10) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+
+	})
+	.on("mouseout", function(d) {
+
+    exit_highlight();
+
+    div.transition()
+        .duration(500)
+        .style("opacity", 0);
+	});
 
 	d3.select(window).on("mouseup",
 		function() {
@@ -1192,7 +1302,6 @@ function download(){
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
-//});
 
 </script>
 </body>
