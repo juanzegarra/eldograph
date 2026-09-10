@@ -619,6 +619,7 @@ listaSugestoesTaxon.addEventListener("change", () => {
   }
 
   ancestorMap = buildAncestorMap(colorByTaxon);
+  console.log(ancestorMap);
   applyTaxonColoring();
 });
 
@@ -749,7 +750,7 @@ run_command.addEventListener("click", (e) => {
   } else {
     new_links = shallow_search(links, itemSelecionado);
   }
-  make_table(new_links);
+  const node_count = make_table(new_links);
   draw(new_links);
 });
 
@@ -830,6 +831,7 @@ function make_table(new_links) {
         if (target != null) {
             node_count[target] = (node_count[target] || 0) + 1;
         }
+    return node_count;
     });
 
     console.log(node_count);
@@ -961,6 +963,9 @@ function draw(links){
 	var div = d3.select("body").append("div")
 	    .attr("class", "tooltip")
 	    .style("opacity", 0);
+	var div1 = d3.select("body").append("div")
+	    .attr("class", "tooltip")
+	    .style("opacity", 0);
 
 	var container = svg.append("g").attr("class", "zoom-layer");
 
@@ -997,20 +1002,15 @@ function draw(links){
 		.attr("class", "link")
 		.style("fill","none")
 		.style("stroke-width",nominal_stroke)
-		.style("stroke", function(d) { return css[d.type]; });
-      });
-      .on("mouseover", function(d) {
-	        div.transition()
-	            .duration(200)
-	            .style("opacity", .9);
-
-	        div.html("<b>source</b>: " + d.source.name +
+		.style("stroke", function(d) { return css[d.type]; })
+		.on("mouseover", function(d) {
+		div.html("<b>source</b>: " + d.source.name +
 	                 "<br><b>target</b>: " + d.target.name +
 	                 "<br><b>value</b>: " + d.value.toFixed(3))
+		.style("left", (d3.event.pageX) + "px")
+		.style("top", (d3.event.pageY - 28) + "px");
+		})
 
-	            .style("left", (d3.event.pageX) + "px")
-	            .style("top", (d3.event.pageY - 28) + "px");
-	    })
 
 	    .on("mouseout", function(d) {
 	        div.transition()
@@ -1032,12 +1032,26 @@ function draw(links){
 		.attr("r", 5)
 		.attr("style", "fill:#ccc;stroke:#fff;stroke-width:1.5px");
 
-	// add the text
+	// add the text and mouseover/mouseout events for displaying node information
 	node.append("text")
 		.attr("x", 12)
 		.attr("dy", ".35em")
 		.attr("style", "fill:#000;font:10px sans-serif;pointer-events:none")
 		.text(function(d) { return d.name; });
+	node.on("mouseover", function(d) {
+		div1.transition()
+			.duration(200)
+			.style("opacity", 0.9);
+		div1.html("<b>name</b>: " + d.name +
+		          "<br><b>count</b>: " + node_count[d.name])
+			.style("left", (d3.event.pageX) + "px")
+			.style("top", (d3.event.pageY - 28) + "px");
+	})
+	.on("mouseout", function() {
+		div1.transition()
+			.duration(500)
+			.style("opacity", 0);
+	});
 
 	var text = node.selectAll("text")
 		.style("font-size", nominal_text_size + "px");
@@ -1145,19 +1159,6 @@ function draw(links){
 	node.on("mouseover", function(d) {
 
     set_highlight(d);
-
-    div.transition()
-        .duration(200)
-        .style("opacity", 1);
-
-    div.html("<b>source</b>: " + d.source.name +
-              "<br><b>target</b>: " + d.target.name +
-              "<br><b>value</b>: " + d.value.toFixed(3))
-        .style("left", (d3.event.pageX + 10) + "px")
-        .style("top", (d3.event.pageY - 28) + "px");
-
-    console.log("Added divs to nodes");
-
 	})
 	.on("mousemove", function() {
 

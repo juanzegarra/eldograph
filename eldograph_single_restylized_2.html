@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<style>
+
+:root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #e2e6ec;
+  --text: #1f2430;
+  --text-muted: #6b7280;
+  --accent: #3b5bdb;
+  --accent-hover: #2f47b3;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-md: 0 4px 14px rgba(16, 24, 40, 0.08);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 24px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 20px 0;
+  color: var(--text);
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+form::after {
+  content: "";
+  flex-basis: 100%;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 6px;
+}
+
+select,
+input[type="text"],
+input[type="number"] {
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 7px 10px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+select:focus,
+input[type="text"]:focus,
+input[type="number"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.15);
+}
+
+.dropdown-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+}
+
+input[type="range"] {
+  width: 140px;
+  accent-color: var(--accent);
+  vertical-align: middle;
+}
+
+output {
+  display: inline-block;
+  min-width: 40px;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-left: 6px;
+}
+
+div.param {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 10px 14px;
+  background: #f8f9fb;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+div.param span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+div.param[style*="background:#FFF"],
+div.param[style*="background: #FFF"] {
+  background: #fff !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 7px;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+button:hover {
+  background: var(--accent-hover);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+#myBtn {
+  background: #fff;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+#myBtn:hover {
+  background: #eef1fd;
+}
+
+.textbox {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+.textbox label {
+  order: -1;
+}
+
+#depth_n-box {
+  border: 1px solid var(--border) !important;
+  border-radius: 8px;
+  background: #f8f9fb;
+  padding: 10px 14px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: auto !important;
+}
+
+#depth_n-box label {
+  order: 1;
+  margin-bottom: 0;
+  margin-top: 2px;
+}
+
+#run {
+  background: #12b76a;
+}
+
+#run:hover {
+  background: #0e9257;
+}
+
+#busca-box {
+  position: relative;
+}
+
+#sugestoes {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+#sugestoes div.suggestion-item {
+  padding: 7px 12px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+#sugestoes div.suggestion-item:hover,
+#sugestoes div.suggestion-item.active {
+  background: #eef1fd;
+}
+
+#taxon-color-container {
+  margin-bottom: 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+  max-width: 280px;
+}
+
+#taxon-color-container select {
+  width: 100%;
+}
+
+div#graph {
+  margin: 0;
+  padding: 6px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: inline-block;
+  overflow: auto;
+}
+
+div#table {
+  margin-top: 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 16px;
+  max-width: 420px;
+}
+
+div#table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+div#table th,
+div#table td {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+div#table th {
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* --- graph elements --- */
+
+path.link {
+  fill: none;
+  stroke: #94a3b8;
+  stroke-width: 1.5px;
+}
+
+path.link.twofive {
+  opacity: 0.25;
+}
+
+path.link.fivezero {
+  stroke: #3366ff;
+}
+
+path.link.sevenfive {
+  stroke: #00cc00;
+}
+
+path.link.onezerozero {
+  stroke: #ff0000;
+}
+
+circle {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+text {
+  fill: #1f2430;
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  background: #1f2430;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  max-width: 260px;
+}
+
+.tooltip.visible {
+  opacity: 1;
+}
+
+.tooltip .tt-title {
+  font-weight: 700;
+  margin-bottom: 3px;
+  color: #fff;
+}
+
+.tooltip .tt-row {
+  color: #cbd2e0;
+}
+
+.tooltip .tt-row b {
+  color: #fff;
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+<h1>ELDO analysis</h1>
+<form>
+
+    <div class="dropdown-container">
+      <label for="taxon">Taxon level &amp; cutoff</label>
+      <select name="taxon" id="taxon">
+        <option value="genus_results_0.05.json">Genus 0.5</option>
+        <option value="genus_results_0.1.json">Genus 0.1</option>
+        <option value="genus_results_0.json">Genus 0</option>
+        <option value="family_results_0.05.json">Family 0.5</option>
+        <option value="family_results_0.1.json">Family 0.1</option>
+        <option value="family_results_0.json">Family 0</option>
+        <option value="class_results_0.05.json">Class 0.5</option>
+        <option value="class_results_0.1.json">Class 0.1</option>
+        <option value="class_results_0.json">Class 0</option>
+        <option value="order_results_0.05.json">Order 0.5</option>
+        <option value="order_results_0.1.json">Order 0.1</option>
+        <option value="order_results_0.json">Order 0</option>
+        <option value="spORDER_results_0.05.json">spORDER 0.05</option>
+        <option value="spORDER_results_0.1.json">spORDER 0.1</option>
+        <option value="spORDER_results_0.json">spORDER 0</option>
+
+      </select>
+    </div>
+
+
+	<div class="param">
+		<span>Threshold</span>
+		<div><input id="thresholdValueIn" type="range" min="0" max="100" name="threshold" value="10" oninput="thresholdValueOut.value = thresholdValueIn.value/100;"><output id="thresholdValueOut">0.1</output></div>
+	</div>
+	<div class="param">
+		<span>Link distance</span>
+		<div><input id="linkValueIn" type="range" min="50" max="1000" name="link" value="100" oninput="linkValueOut.value = linkValueIn.value;"><output id="linkValueOut">100</output></div>
+	</div>
+	<div class="param">
+		<span>Charge</span>
+		<div><input id="chargeValueIn" type="range" min="50" max="1000" name="charge" value="350" oninput="chargeValueOut.value = chargeValueIn.value*(-1);"><output id="chargeValueOut">-350</output></div>
+	</div>
+	<div class="param" style="background:#FFF">
+		<button type="button" id="myBtn" onclick="download()">⬇ Download</button>
+	</div>
+	<div class="textbox" id="busca-box" style="background:#FFF;" autocomplete="new-password" name="busca_clade_xyz" >
+	    <label for="busca">Clade</label>
+		<input type="text" id="busca" placeholder="Type your clade...">
+	    <div id="sugestoes"></div>
+	</div>
+	<div class="textbox" id="depth_n-box" placeholder="0" style="border: 1px solid #ccc; padding: 8px; width: 200px;">
+        <label for="depth_n">Depth of search</label>
+        <input type="number" min="0" id="depth_n">
+	</div>
+	<div class="button">
+	<button id="run" type="button">▶ Generate Graph</button>
+	</div>
+</form>
+<div class="dropdown-container" id="taxon-color-container">
+	<label for="taxon_select_box">Colour nodes by ancestor level</label>
+	<div id="sugestoes_taxons">
+		<select id="taxon_select_box">
+			<option value="">— none —</option>
+		</select>
+	</div>
+</div>
+<div id="graph"></div>
+<div id="table"></div>
+<script>
+
+var links;
+
+// get the data
+// NOTE: keys here must match the <option value="..."> list in the #taxon
+// select exactly, or lookups below silently return undefined.
+const files = {
+   "genus_results_0.05.json" : "genus",
+   "genus_results_0.1.json" : "genus",
+   "genus_results_0.json" : "genus",
+   "family_results_0.05.json" : "family",
+   "family_results_0.1.json" : "family",
+   "family_results_0.json" : "family",
+   "class_results_0.05.json" : "class",
+   "class_results_0.1.json" : "class",
+   "class_results_0.json" : "class",
+   "order_results_0.05.json" : "order",
+   "order_results_0.1.json" : "order",
+   "order_results_0.json" : "order",
+   "spORDER_results_0.05.json" : "spORDER",
+   "spORDER_results_0.1.json" : "spORDER",
+   "spORDER_results_0.json" : "spORDER"
+};
+
+var threshold = 0.1;
+var linkDistanceValue = 100;
+var chargeValue = -350;
+var focus_node = null, highlight_node = null;
+var highlight_color = "blue";
+var highlight_trans = 0.1;
+var text_center = false;
+var outline = false;
+var default_node_color = "#ccc";
+var nominal_stroke = 1.5;
+var nominal_text_size = 10;
+var json_file = null
+var table = document.getElementById("table");
+
+// Kept so a change to the "color by ancestor" dropdown can recolor the
+// graph that's already on screen, without having to redraw it.
+var lastCircleSelection = null;
+var lastTocolor = "fill";
+
+var input = document.getElementById("busca");
+var listaSugestoes = document.getElementById("sugestoes");
+var listaSugestoesTaxon = document.getElementById("taxon_select_box");
+var profundidade = document.getElementById("depth_n");
+let itemSelecionado = null;
+var activeIndex = -1;
+
+var taxonSelect = document.getElementById("taxon"); // the element, never reassigned
+let selectedTaxonFile = taxonSelect.value;             // the string value
+const taxon_columns = {
+  "family": 21,
+  "genus": 25,
+  "class": 10,
+  "order": 16,
+  "spORDER": 15,
+  "phylum": 7,
+  "kingdom": 4
+};
+// Ordered broad -> narrow, matching the column numbers in taxon_columns
+// (kingdom=4 < phylum=7 < class=10 < spORDER=15 < order=16 < family=21 < genus=25).
+// Used to figure out which levels are "ancestors" of whichever level is
+// currently loaded (so we only offer to color by levels that are
+// actually broader than the current one).
+const taxon_levels = ["kingdom", "phylum", "class", "spORDER", "order", "family", "genus"];
+var taxon_level = null;
+var superiorTaxonLevelsToDisplay = null;
+
+// Coloring-by-ancestor state
+var colorByTaxon = null;         // currently selected ancestor level, e.g. "family"
+var ancestorMap = {};            // node name -> ancestor name, for colorByTaxon
+var taxonomyLineage = null;      // raw taxa_to_write_<level>.json: node name -> [id, ancestor names... broad to narrow]
+var taxonColorScale = d3.scale.category20b();
+
+// Get file with nodes from the selected taxon file, then (once loaded)
+// fetch the matching taxonomy-lineage lookup and figure out which
+// ancestor levels are available for coloring.
+taxonSelect.addEventListener("change", () => {
+  listaSugestoesTaxon.innerHTML = '<option value="">— none —</option>';
+  colorByTaxon = null;
+  ancestorMap = {};
+  taxonomyLineage = null;
+  selectedTaxonFile = taxonSelect.value;
+  get_taxon_file(taxonSelect);
+});
+
+taxonSelect.dispatchEvent(new Event("change"));
+
+
+function get_taxon_file(taxon_file){
+
+      d3.json(taxon_file.value, function(error, data) {
+
+          if (error) {
+              console.error("Error loading JSON:", error);
+              return;
+          }
+
+          links = data;
+
+          console.log("Loaded:", links);
+          console.warn("Data loaded successfully.");
+          taxon_level = files[taxon_file.value];
+
+          if (!taxon_level) {
+            console.warn("No taxon level mapping found for file:", taxon_file.value);
+            return;
+          }
+
+          populateAncestorLevelDropdown();
+          loadTaxonomyLineage(taxon_level);
+
+      });
+
+}
+
+// Populate the "color nodes by ancestor level" dropdown with every level
+// broader than the currently loaded one (this only runs once taxon_level
+// is actually known, avoiding the old race condition).
+function populateAncestorLevelDropdown(){
+  listaSugestoesTaxon.innerHTML = '<option value="">— none —</option>';
+
+  const idx = taxon_levels.indexOf(taxon_level);
+  superiorTaxonLevelsToDisplay = idx > 0 ? taxon_levels.slice(0, idx) : [];
+
+  superiorTaxonLevelsToDisplay.forEach((level) => {
+    const opt = document.createElement("option");
+    opt.value = level;
+    opt.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+    listaSugestoesTaxon.appendChild(opt);
+  });
+}
+
+// Loads taxa_to_write_<level>.json — produced by filter_taxallnomy.py —
+// which maps each node name at this level to an array like:
+//   [id, "Domain", "Realm", "Kingdom", ..., "<name at this level>"]
+// The name at any broader rank sits at index (taxon_columns[rank] - 1),
+// since taxon_columns holds 1-indexed column numbers from the taxallnomy
+// table and JS arrays are 0-indexed.
+function loadTaxonomyLineage(level){
+  var lineageFile = "taxa_to_write_" + level + ".json";
+  d3.json(lineageFile, function(error, data) {
+    if (error) {
+      console.error("Could not load taxonomy lineage file:", lineageFile, error);
+      taxonomyLineage = null;
+      return;
+    }
+    taxonomyLineage = data;
+    // in case the user already picked a coloring level before this
+    // finished loading, build the map now instead of waiting for another change
+    if (colorByTaxon) {
+      ancestorMap = buildAncestorMap(colorByTaxon);
+      applyTaxonColoring();
+    }
+  });
+}
+
+// Derives a node-name -> ancestor-name lookup for a given rank from the
+// already-loaded taxonomyLineage data.
+function buildAncestorMap(level){
+  var map = {};
+  if (!taxonomyLineage || !(level in taxon_columns)) return map;
+  var idx = taxon_columns[level];
+  Object.keys(taxonomyLineage).forEach(function(nodeName){
+    var lineage = taxonomyLineage[nodeName];
+    if (lineage && lineage.length > idx) {
+      map[nodeName] = lineage[idx];
+    }
+  });
+  return map;
+}
+
+// When the user picks an ancestor level, recolor the nodes currently on
+// screen using the already-loaded lineage data (no extra fetch needed).
+listaSugestoesTaxon.addEventListener("change", () => {
+  colorByTaxon = listaSugestoesTaxon.value || null;
+
+  if (!colorByTaxon) {
+    ancestorMap = {};
+    applyTaxonColoring();
+    return;
+  }
+
+  if (!taxonomyLineage) {
+    console.warn("Taxonomy lineage data not loaded yet — try again in a moment.");
+    return;
+  }
+
+  ancestorMap = buildAncestorMap(colorByTaxon);
+  console.log(ancestorMap);
+  applyTaxonColoring();
+});
+
+$("form").change(function(event) {
+
+    if (!links) {
+        console.warn("No data loaded yet — select a taxon level first.");
+        return false;
+    }
+});
+
+// Extract list of taxa inside a given taxon file (e.g. "genus_results_0.1.json")
+input.addEventListener("input", () => {
+  itemSelecionado = null;
+  activeIndex = -1;
+  if(!links) {
+    console.warn("No data loaded yet — select a taxon level first.");
+    return;
+  }
+
+    const termo = input.value.toLowerCase().trim();
+
+    listaSugestoes.innerHTML = "";
+
+    // Always show "All" (displays all taxa in the file)
+    const allOption = document.createElement("div");
+    allOption.textContent = "All";
+    allOption.classList.add("suggestion-item");
+    allOption.addEventListener("click", () => {
+        itemSelecionado = "all";
+        input.value = "All";
+        listaSugestoes.innerHTML = "";
+
+    });
+
+    listaSugestoes.appendChild(allOption);
+
+    var filtrados = [];
+    var sources = new Set();
+
+    // Filter taxa based on the search term
+    links.forEach(link => {
+        if (
+            link.source.toLowerCase().startsWith(termo) &&
+            !sources.has(link.source)
+        ) {
+            sources.add(link.source);
+            filtrados.push(link);
+        }
+    });
+
+    // Display filtered taxa on susgetoes
+    filtrados.forEach(item => {
+        const div = document.createElement("div");
+        div.textContent = item.source;
+        div.classList.add("suggestion-item");
+        div.addEventListener("click", () => { itemSelecionado = item.source; input.value = item.source; listaSugestoes.innerHTML = ""; });
+        listaSugestoes.appendChild(div);
+      });
+});
+
+// Closes the suggestion when clicking outside the search box
+document.addEventListener("click", (e) => {
+if (!document.getElementById("busca-box").contains(e.target)) {
+  listaSugestoes.innerHTML = "";
+}
+});
+
+
+// Handles keyboard navigation within the suggestion list
+input.addEventListener("keydown", (e) => {
+  var items = listaSugestoes.querySelectorAll(".suggestion-item");
+  if (items.length === 0) return;
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    activeIndex = (activeIndex + 1) % items.length;
+    highlightActive(items);
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    activeIndex = (activeIndex - 1 + items.length) % items.length;
+    highlightActive(items);
+  } else if (e.key === "Enter") {
+    e.preventDefault(); // stop the form from submitting on Enter — same reload issue as the button
+    if (activeIndex >= 0 && activeIndex < items.length) {
+      items[activeIndex].click(); // reuses your existing click handler logic
+    }
+  } else if (e.key === "Escape") {
+    listaSugestoes.innerHTML = "";
+    activeIndex = -1;
+  }
+});
+
+// Highlights the active item in the suggestion list
+function highlightActive(items) {
+  items.forEach((item, i) => {
+    item.classList.toggle("active", i === activeIndex);
+  });
+  if (activeIndex >= 0) {
+    items[activeIndex].scrollIntoView({ block: "nearest" });
+  }
+}
+
+var run_command = document.getElementById("run")
+
+
+//só rodar se entradas estarem certas
+
+run_command.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  console.log("Generating for:", itemSelecionado, "depth:", profundidade.value);
+
+   if (!itemSelecionado) {
+     console.warn("No clade selected — click a suggestion from the dropdown first.");
+     return;
+   }
+
+  if (!itemSelecionado) return;
+
+  var new_links;
+
+  if (itemSelecionado === "all") {
+    new_links = links;
+  } else if (profundidade.value > 0) {
+    var new_nodes = getSubgraph(itemSelecionado, Number(profundidade.value), links);
+    new_links = get_new_links(new_nodes, links);
+  } else {
+    new_links = shallow_search(links, itemSelecionado);
+  }
+  make_table(new_links);
+  draw(new_links);
+});
+
+
+//funcao de breadth based search
+
+function getSubgraph(startNode, maxDepth, links) {
+    var visited = new Set();
+    var queue = [];
+    visited.add(startNode);
+    queue.push({ node: startNode, depth: 0 });
+
+    while (queue.length > 0) {
+        var current = queue.shift();
+        if (current.depth >= maxDepth) continue;
+
+        links.forEach(function(link) {
+            if (link.value < threshold) return; // skip weak edges — same cutoff as draw()
+
+            var neighbor = null;
+            if (link.source === current.node) neighbor = link.target;
+            else if (link.target === current.node) neighbor = link.source;
+
+            if (neighbor !== null && !visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push({ node: neighbor, depth: current.depth + 1 });
+            }
+        });
+    }
+
+    return visited;
+}
+
+// Filters links to only include those between visible nodes
+function get_new_links(visible_Nodes, links){
+  var visibleLinks = [];
+  links.forEach(function(link) {
+    if (visible_Nodes.has(link.source) && visible_Nodes.has(link.target)) {
+      visibleLinks.push(link);
+    }
+  });
+
+  console.debug("visibleLinks", visibleLinks)
+  return visibleLinks;
+}
+
+// Performs a shallow search to find links connected to the target node
+function shallow_search(links, target) {
+  var new_links = [];
+  links.forEach(function(link) {
+    if (link.source === target || link.target === target) {
+      new_links.push(link);
+    }
+  });
+  return new_links;
+}
+
+// Creates a table ordered by most-linked nodes, and renders it into #table.
+
+function make_table(new_links) {
+
+    var node_count = {};
+
+    new_links.forEach(function(link) {
+
+        var source = typeof link.source === "object"
+            ? link.source.name
+            : link.source;
+
+        var target = typeof link.target === "object"
+            ? link.target.name
+            : link.target;
+
+        if (source != null) {
+            node_count[source] = (node_count[source] || 0) + 1;
+        }
+
+        if (target != null) {
+            node_count[target] = (node_count[target] || 0) + 1;
+        }
+    });
+
+    console.log(node_count);
+    var sorted = Object.entries(node_count)
+        .sort(function(a, b) {
+            return b[1] - a[1];
+        });
+
+    var rows =
+        '<table>' +
+        '<tr><th>Node</th><th>Connections</th></tr>';
+
+    sorted.forEach(function(entry) {
+        rows +=
+            '<tr>' +
+            '<td>' + entry[0] + '</td>' +
+            '<td>' + entry[1] + '</td>' +
+            '</tr>';
+    });
+
+    rows += '</table>';
+
+    table.innerHTML = rows;
+}
+
+// Decides a node's fill/stroke color: ancestor-based color takes priority
+// when the user has picked a level and we have an entry for this node,
+// otherwise falls back to the original score-based / default coloring.
+function nodeColor(d) {
+  if (colorByTaxon && ancestorMap[d.name]) {
+    return taxonColorScale(ancestorMap[d.name]);
+  }
+  if (isNumber(d.score) && d.score >= 0) return color(d.score);
+  return default_node_color;
+}
+
+// Recolors the currently drawn graph in place (no redraw / no re-layout)
+// after the "color by ancestor" dropdown changes.
+function applyTaxonColoring() {
+  if (!lastCircleSelection) return;
+  lastCircleSelection.style(lastTocolor, function(d) { return nodeColor(d); });
+}
+function get_taxon_legend(d){
+
+}
+// Begins to draw the graph
+function draw(links){
+
+	// clear out any previously drawn graph so repeated "Generate Graph"
+	// clicks don't stack multiple <svg> elements on top of each other
+	d3.select("div#graph").selectAll("svg").remove();
+
+	var nodes = {};
+	var tempLinks =[];
+	var linkedByIndex = {};
+	// Compute the distinct nodes from the links.
+	links.forEach(function(link) {
+		if (link.value >= threshold){
+			var cloneLink = $.extend(true, {}, link);
+			tempLinks.push(cloneLink);
+			linkedByIndex[link.source + "," + link.target] = true;
+		}
+	});
+	tempLinks.forEach(function(link) {
+		link.source = nodes[link.source] ||
+			(nodes[link.source] = {name: link.source});
+		link.target = nodes[link.target] ||
+			(nodes[link.target] = {name: link.target});
+		link.value = +link.value;
+	});
+
+	// Degree count (number of drawn links touching each node) — used for
+	// the node tooltip below. Computed from tempLinks so it always matches
+	// what's actually on screen (same threshold-filtered set drawn here).
+	var nodeDegree = {};
+	tempLinks.forEach(function(link) {
+		nodeDegree[link.source.name] = (nodeDegree[link.source.name] || 0) + 1;
+		nodeDegree[link.target.name] = (nodeDegree[link.target.name] || 0) + 1;
+	});
+
+
+
+	if (itemSelecionado && itemSelecionado !== "all" && nodes[itemSelecionado]) {
+    var targetNode = nodes[itemSelecionado];
+    targetNode.x = targetNode.px = width / 2;
+    targetNode.y = targetNode.py = height / 2;
+    targetNode.fixed = true;
+	}
+
+	function isConnected(a, b) {
+        return linkedByIndex[b.name + "," + a.name]|| a.name == b.name;// || linkedByIndex[a.name + "," + b.name];
+    }
+
+
+	var width = 1200,
+		height= 800;
+
+	var force = d3.layout.force()
+		.nodes(d3.values(nodes))
+		.links(tempLinks)
+		.size([width, height])
+		.linkDistance(linkDistanceValue)
+		.charge(chargeValue)
+		.on("tick", tick)
+		.start();
+
+	setTimeout(function() {
+    force.stop();
+	}, 2000);
+
+	// Set the range
+	var  v = d3.scale.linear().range([0, 100]);
+
+	// Scale the range of the data
+	v.domain([d3.min(tempLinks, function(d) { return d.value; }), d3.max(tempLinks, function(d) { return d.value; })]);
+	// asign a type per value to encode opacity
+	tempLinks.forEach(function(link) {
+		if (v(link.value) <= 25) {
+			link.type = "twofive";
+		} else if (v(link.value) <= 50 && v(link.value) > 25) {
+			link.type = "fivezero";
+		} else if (v(link.value) <= 75 && v(link.value) > 50) {
+			link.type = "sevenfive";
+		} else if (v(link.value) <= 100 && v(link.value) > 75) {
+			link.type = "onezerozero";
+		}
+	});
+
+	var css = {
+		twofive:"#bcbcbc",
+		fivezero:"#3366ff",
+		sevenfive:"#00cc00",
+		onezerozero:"#ff0000",
+	};
+
+	var svg = d3.select("div#graph").append("svg")
+		.attr("width", width)
+		.attr("height", height)
+		.attr("id", "graphResult");
+	var div = d3.select("body").append("div")
+	    .attr("class", "tooltip")
+	    .style("opacity", 0);
+	var div1 = d3.select("body").append("div")
+	    .attr("class", "tooltip")
+	    .style("opacity", 0);
+
+	var container = svg.append("g").attr("class", "zoom-layer");
+
+	var zoom = d3.behavior.zoom()
+    .scaleExtent([0.1, 8])
+    .on("zoom", function() {
+        container.attr("transform",
+            "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+    });
+
+	svg.call(zoom);
+	svg.on("dblclick.zoom", null);
+
+	// build the arrow.
+	svg.append("svg:defs").selectAll("marker")
+		.data(["end"])      // Different link/path types can be defined here
+	  .enter().append("svg:marker")    // This section adds in the arrows
+		.attr("id", String)
+		.attr("viewBox", "0 -5 10 10")
+		.attr("refX", 15)
+		.attr("refY", -1.5)
+		.attr("markerWidth", 6)
+		.attr("markerHeight", 6)
+		.attr("orient", "auto")
+	  .append("svg:path")
+		.attr("d", "M0,-5L10,0L0,5");
+
+	// add the links and the arrows
+	var path = container.append("svg:g").selectAll("path")
+		.data(force.links())
+	  .enter().append("svg:path")
+		//.attr("style", function(d) { return "fill:none;stroke-width:1.5px;" + css[d.type]; })
+		.attr("marker-end", "url(#end)")
+		.attr("class", "link")
+		.style("fill","none")
+		.style("stroke-width",nominal_stroke)
+		.style("stroke", function(d) { return css[d.type]; })
+		.on("mouseover", function(d) {
+		div.html("<b>source</b>: " + d.source.name +
+	                 "<br><b>target</b>: " + d.target.name +
+	                 "<br><b>value</b>: " + d.value.toFixed(3))
+		.style("left", (d3.event.clientX) + "px")
+		.style("top", (d3.event.clientY - 28) + "px");
+		})
+
+
+	    .on("mouseout", function(d) {
+	        div.transition()
+	            .duration(500)
+	            .style("opacity", 0);
+	    });
+	// Legend of colors used for taxon based coloring
+	var color_legend_div = container.append("div")
+		.attr("class", "color-legend")
+		.style("position", "absolute")
+		.style("top", "10px")
+		.style("left", "10px")
+		.html("");
+	// define the nodes
+	var node = container.selectAll(".node")
+		.data(force.nodes())
+	  .enter().append("g")
+		.attr("class", "node")
+		.on("click", click)
+		.on("dblclick", dblclick)
+		.call(force.drag);
+
+	// add the nodes
+	node.append("circle")
+		.attr("r", 5)
+		.attr("style", "fill:#ccc;stroke:#fff;stroke-width:1.5px");
+
+	// add the text
+	node.append("text")
+		.attr("x", 12)
+		.attr("dy", ".35em")
+		.attr("style", "fill:#000;font:10px sans-serif;pointer-events:none")
+		.text(function(d) { return d.name; });
+
+	var text = node.selectAll("text")
+		.style("font-size", nominal_text_size + "px");
+
+	function zoomToFit(padding) {
+        padding = padding || 40;
+        var bounds = container.node().getBBox();
+        if (bounds.width === 0 || bounds.height === 0) return;
+
+        var scale = Math.min(
+            (width - padding * 2) / bounds.width,
+            (height - padding * 2) / bounds.height,
+            2 // don't zoom in past 2x even for tiny graphs
+        );
+        var midX = bounds.x + bounds.width / 2;
+        var midY = bounds.y + bounds.height / 2;
+        var translate = [width / 2 - scale * midX, height / 2 - scale * midY];
+
+        svg.transition().duration(500)
+            .call(zoom.translate(translate).scale(scale).event);
+   	}
+
+	// add the curvy lines
+	var settled = false;
+	function tick() {
+		path.attr("d", function(d) {
+			var dx = d.target.x - d.source.x,
+				dy = d.target.y - d.source.y,
+				dr = Math.sqrt(dx * dx + dy * dy);
+			return "M" +
+				d.source.x + "," +
+				d.source.y + "A" +
+				dr + "," + dr + " 0 0,1 " +
+				d.target.x + "," +
+				d.target.y;
+		});
+
+		node.attr("transform", function(d) {
+        return "translate(" + d.x + "," + d.y + ")"; });
+
+    if (!settled && force.alpha() < 0.02) {
+        settled = true;
+        force.stop();
+        zoomToFit();
+    };
+
+	}
+
+
+
+	// add legend
+	var legendData = [
+		{pos:0, type:"twofive", value:threshold+" < x < "+v.invert(25).toFixed(2)},
+		{pos:1, type:"fivezero", value:v.invert(25).toFixed(2)+" < x < "+v.invert(50).toFixed(2)},
+		{pos:2, type:"sevenfive", value:v.invert(50).toFixed(2)+" < x < "+v.invert(75).toFixed(2)},
+		{pos:3, type:"onezerozero", value:v.invert(75).toFixed(2)+" < x < "+v.invert(100).toFixed(2)},
+	];
+
+	svg.append("svg:g").selectAll("path")
+		.attr("class", "legend")
+		.data(legendData)
+	  .enter().append("svg:path")    // This section adds in the arrows
+		.attr("style", function(d){
+			return "fill:none;stroke-width:1.5px;stroke:" + css[d.type];
+		})
+		.attr("d", function(d){
+			var position = 20 + (d.pos*20);
+			return "M 10 "+position+" l 25 0";
+		});
+	svg.append("svg:g").selectAll("text")
+		.attr("class", "legend")
+		.data(legendData)
+	  .enter().append("svg:text")
+		.attr("x", "45")
+		.attr("y", function(d){
+			return 25 + (d.pos*20);
+		})
+		.attr("style", "fill:#000;font:10px sans-serif;pointer-events:none")
+		.text(function(d){
+			return d.value;
+		});
+
+
+	var tocolor = "fill";
+	var towhite = "stroke";
+	if (outline) {
+		tocolor = "stroke"
+		towhite = "fill"
+	}
+
+	var circle = node.append("path")
+      .attr("d", d3.svg.symbol()
+        //.size(function(d) { return Math.PI*Math.pow(size(d.size)||nominal_base_node_size,2); })
+        .type(function(d) { return d.type; }))
+	.style(tocolor, function(d) { return nodeColor(d); })
+    //.attr("r", function(d) { return size(d.size)||nominal_base_node_size; })
+	.style("stroke-width", nominal_stroke)
+	.style(towhite, "white");
+
+	// keep references so the "color by ancestor" dropdown can recolor
+	// this same graph later without a full redraw
+	lastCircleSelection = circle;
+	lastTocolor = tocolor;
+
+	node.on("mouseover", function(d) {
+
+    set_highlight(d);
+
+    div1.transition()
+        .duration(200)
+        .style("opacity", 0.9);
+    div1.html("<b>name</b>: " + d.name +
+              "<br><b>connections</b>: " + (nodeDegree[d.name] || 0))
+        .style("left", (d3.event.clientX + 10) + "px")
+        .style("top", (d3.event.clientY - 28) + "px");
+	})
+	.on("mousemove", function() {
+
+    div1
+        .style("left", (d3.event.clientX + 10) + "px")
+        .style("top", (d3.event.clientY - 28) + "px");
+
+	})
+	.on("mouseout", function(d) {
+
+    exit_highlight();
+
+    div1.transition()
+        .duration(500)
+        .style("opacity", 0);
+	});
+
+	d3.select(window).on("mouseup",
+		function() {
+			if (focus_node!==null){
+				focus_node = null;
+				if (highlight_trans<1){
+					circle.style("opacity", 1);
+					text.style("opacity", 1);
+					path.style("opacity", 1);
+				}
+			}
+			if (highlight_node === null) exit_highlight();
+		});
+
+	function exit_highlight(){
+		highlight_node = null;
+		if (focus_node===null){
+			//svg.style("cursor","move");
+			if (highlight_color!="white"){
+				circle.style(towhite, "white");
+				text.style("font-weight", "normal");
+				//path.style("stroke", function(o) {return (isNumber(o.score) && o.score>=0)?color(o.score):default_link_color});
+			}
+		}
+	}
+
+	function set_focus(d){
+		if (highlight_trans<1){
+			circle.style("opacity", function(o) {
+				return isConnected(d, o) ? 1 : highlight_trans;
+			});
+
+			text.style("opacity", function(o) {
+				return isConnected(d, o) ? 1 : highlight_trans;
+			});
+			path.style("opacity", function(o) {
+				//return o.source.index == d.index || o.target.index == d.index ? 1 : highlight_trans;
+				return o.target.index == d.index ? 1 : highlight_trans;
+			});
+		}
+	}
+
+
+	function set_highlight(d){
+		//svg.style("cursor","pointer");
+		if (focus_node!==null) d = focus_node;
+		highlight_node = d;
+
+		if (highlight_color!="white"){
+			  circle.style(towhite, function(o) {
+					return isConnected(d, o) ? highlight_color : "white";});
+				text.style("font-weight", function(o) {
+					return isConnected(d, o) ? "bold" : "normal";});
+				//path.style("stroke", function(o) {
+				//  return o.source.index == d.index || o.target.index == d.index ? highlight_color : ((isNumber(o.score) && o.score>=0)?color(o.score):default_link_color);
+				//});
+		}
+	}
+};
+
+
+
+
+
+// action to take on mouse click
+function click() {
+    d3.select(this).select("text").transition()
+        .duration(750)
+     d3.select(this).select("circle").transition()
+        .duration(750)
+}
+
+// action to take on mouse double click
+function dblclick() {
+    d3.select(this).select("circle").transition()
+        .duration(750)
+    d3.select(this).select("text").transition()
+        .duration(750)
+}
+
+$( "form" ).change(function( event ) {
+	var inthreshold = $( "input#thresholdValueIn" ).val();
+	inthreshold = inthreshold/100;
+	threshold = inthreshold;
+
+	linkDistanceValue = $( "input#linkValueIn" ).val();
+
+	chargeValue = $( "input#chargeValueIn" ).val()*(-1);
+
+	$( "svg#graphResult").remove();
+    return false;
+});
+
+function updateTextThreshold(val) {
+	val = val/100;
+	document.getElementById("thresholdText").value=val;
+}
+
+function download(){
+	//get svg element.
+	var svg = document.getElementById("graphResult");
+
+	//get svg source.
+	var serializer = new XMLSerializer();
+	var source = serializer.serializeToString(svg);
+
+	//add name spaces.
+	if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
+		source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+	}
+	if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
+		source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+	}
+
+	//add xml declaration
+	source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+
+	//convert svg source to URI data scheme.
+	var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
+
+	//set url value to a element's href attribute.
+	window.open(url, '_blank');
+	//you can download svg file by right click menu.
+}
+
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+</script>
+</body>
+</html>
