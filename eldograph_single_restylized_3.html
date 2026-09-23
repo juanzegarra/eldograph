@@ -551,7 +551,13 @@ taxonSelect.addEventListener("change", () => {
   get_taxon_file(taxonSelect);
 });
 
+// Variables for table sorting
+var currentSortColumn = null;
+var isAscending = true;
+
 taxonSelect.dispatchEvent(new Event("change"));
+
+
 
 
 function get_taxon_file(taxon_file){
@@ -785,7 +791,7 @@ run_command.addEventListener("click", (e) => {
   } else {
     new_links = shallow_search(links, itemSelecionado);
   }
-  make_table(new_links);
+  table_obj = make_table(new_links);
   draw(new_links);
 });
 
@@ -881,9 +887,23 @@ function make_table(new_links) {
             return b[1] - a[1];
         });
 
+    var table_obj = {};
+
+    sorted.forEach(function(entry) {
+        table_obj[entry[0]] = {
+            Node: entry[0],
+            Connections: entry[1],
+            asSource: source_count[entry[0]] || 0,
+            asTarget: target_count[entry[0]] || 0
+        };
+    });
+
     var rows =
         '<table>' +
-        '<tr><th>Node</th><th>Connections</th><th>as Source</th><th>as Target</th></tr>';
+        '<tr><th data-col= "Node" >Node<span class="sort-indicator"></span></th>' +
+        '<th data-col="Connections">Connections<span class="sort-indicator"></span></th>' +
+        '<th data-col="as Source">as Source<span class="sort-indicator"></span></th>' +
+        '<th data-col="as Target">as Target<span class="sort-indicator"></span></th></tr>';
 
     sorted.forEach(function(entry) {
         rows +=
@@ -897,8 +917,80 @@ function make_table(new_links) {
 
     rows += '</table>';
 
+    currentSortColumn = "Node";
+    isAscending = true;
+
     table.innerHTML = rows;
+
+    return table_obj;
 }
+
+function sortTable(table_obj, selectedColumn){
+    mapping_obj = {"Node": "Node", "Connections": "Connections", "as Source": "asSource", "as Target": "asTarget"};
+    if (!selectedColumn) return;
+
+    if (currentSortColumn === selectedColumn) {
+        isAscending = !isAscending;
+    }
+    else{
+        currentSortColumn = selectedColumn;
+        isAscending = true;
+    }
+
+    table.innerHTML = "";
+    var sorted = Object.values(table_obj).sort(function(a, b) {
+      if (currentSortColumn === "Node"){
+        valA = a[mapping_obj[currentSortColumn]].toString();
+        valB = b[mapping_obj[currentSortColumn]].toString();
+        return isAscending ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
+      else {
+        valA = parseFloat(a[mapping_obj[currentSortColumn]]);
+        valB = parseFloat(b[mapping_obj[currentSortColumn]]);
+        return isAscending ? valA - valB : valB - valA;
+      }
+    });
+
+    var rows = '<table>';
+    rows += '<tr><th data-col="Node">Node<span class="sort-indicator"></span></th>' +
+        '<th data-col="Connections">Connections<span class="sort-indicator"></span></th>' +
+        '<th data-col="as Source">as Source<span class="sort-indicator"></span></th>' +
+        '<th data-col="as Target">as Target<span class="sort-indicator"></span></th></tr>';
+
+    sorted.forEach(function(entry) {
+        rows +=
+            '<tr>' +
+            '<td>' + entry.Node + '</td>' +
+            '<td>' + entry.Connections + '</td>' +
+            '<td>' + entry.asSource + '</td>' +
+            '<td>' + entry.asTarget + '</td>' +
+            '</tr>';
+    });
+
+    rows += '</table>';
+
+    table.innerHTML = rows;
+
+    updateHeaderIcons();
+}
+
+table.addEventListener("click", function(e) {
+    var th = e.target.closest("th[data-col]");
+    if (!th) return;
+    sortTable(table_obj, th.dataset.col);
+});
+
+function updateHeaderIcons() {
+      document.querySelectorAll("th[data-col]").forEach(th => {
+        const icon = th.querySelector("span");
+        if (th.dataset.col === currentSortColumn) {
+          icon.textContent = isAscending ? " ▲" : " ▼";
+        } else {
+          icon.textContent = "";
+        }
+      });
+    }
+
 
 // Decides a node's fill/stroke color: ancestor-based color takes priority
 // when the user has picked a level and we have an entry for this node,
@@ -939,11 +1031,11 @@ function get_taxon_legend(){
 // render/position there. Safe to call any time (after a redraw, or after
 // just recoloring via the dropdown) since it always clears the old one first.
 function renderTaxonLegend(){
+    // HTML overlay — for on-screen display only, unchanged
     d3.select("#graph").selectAll(".color-legend").remove();
 
     var legendObj = get_taxon_legend();
     var taxonNames = Object.keys(legendObj);
-    if (taxonNames.length === 0) return;
 
     var legend = d3.select("#graph").append("div")
         .attr("class", "color-legend");
@@ -953,8 +1045,39 @@ function renderTaxonLegend(){
             .attr("class", "legend-item")
             .html("<span class='legend-circle' style='background-color:" + legendObj[taxon] + ";'></span> " + taxon);
     });
-}
 
+    // SVG-native duplicate — this is what actually shows up in the download
+    var svgEl = d3.select("svg#graphResult");
+    svgEl.selectAll(".color-legend-svg").remove();
+
+    if (taxonNames.length === 0 || svgEl.empty()) return;
+
+    var svgHeight = +svgEl.attr("height");
+
+    var svgLegend = svgEl.append("g")
+        .attr("class", "color-legend-svg")
+        .attr("transform", "translate(20," + (svgHeight - 20 - taxonNames.length * 18) + ")");
+
+    var items = svgLegend.selectAll(".legend-item-svg")
+        .data(taxonNames)
+        .enter().append("g")
+        .attr("transform", function(d, i) { return "translate(0," + (i * 18) + ")"; });
+
+    items.append("circle")
+        .attr("r", 6)
+        .attr("cx", 6)
+        .attr("cy", 0)
+        .style("fill", function(taxon) { return legendObj[taxon]; })
+        .style("stroke", "#fff")
+        .style("stroke-width", 1);
+
+    items.append("text")
+        .attr("x", 18)
+        .attr("y", 4)
+        .style("font", "10px sans-serif")
+        .style("fill", "#1f2430")
+        .text(function(taxon) { return taxon; });
+}
 // Begins to draw the graph
 function draw(links){
 
@@ -1374,30 +1497,34 @@ function updateTextThreshold(val) {
 }
 
 function download(){
-	//get svg element.
-	var svg = document.getElementById("graphResult");
+    var svgEl = document.getElementById("graphResult");
+    if (!svgEl) {
+        alert("Generate a graph first before downloading.");
+        return;
+    }
 
-	//get svg source.
-	var serializer = new XMLSerializer();
-	var source = serializer.serializeToString(svg);
+    var serializer = new XMLSerializer();
+    var source = serializer.serializeToString(svgEl);
 
-	//add name spaces.
-	if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
-		source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
-	}
-	if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
-		source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
-	}
+    if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
+        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+    if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
+        source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+    }
+    source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
 
-	//add xml declaration
-	source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+    var blob = new Blob([source], {type: "image/svg+xml;charset=utf-8"});
+    var url = URL.createObjectURL(blob);
 
-	//convert svg source to URI data scheme.
-	var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = "graph.svg";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-	//set url value to a element's href attribute.
-	window.open(url, '_blank');
-	//you can download svg file by right click menu.
+    URL.revokeObjectURL(url);
 }
 
 function isNumber(n) {
