@@ -26,40 +26,41 @@ function getSubgraph(startNode, maxDepth, adjecancyMap, threshold) {
 }
 
 // Filters links to only include those between visible nodes
-function get_new_links(visible_Nodes, threshold, adjecancyncyMap){
+function get_new_links(visible_Nodes, threshold, adjecancyncyMap) {
   var visibleLinks = [];
   visible_Nodes.forEach(function (node) {
     const neighbors = adjacencyMap[node];
     for (const neighbor of neighbors) {
-      if (neighbor.value >= threshold)
-      visibleLinks.push({
-      source: neighbor.direction === "asSource" ? node : neighbor.neighbor,
-      target: neighbor.direction === "asTarget" ? node : neighbor.neighbor,
-      value: neighbor.value
-      })
+      if (neighbor.value >= threshold) {
+        visibleLinks.push({
+          source: neighbor.direction === "asSource" ? node : neighbor.neighbor,
+          target: neighbor.direction === "asTarget" ? node : neighbor.neighbor,
+          value: neighbor.value
+        })
+      }
       else {
         break
-      }
-  }
-  console.debug("visibleLinks", visibleLinks)
-  return visibleLinks;
-}
+      };
+    };
+    console.debug("visibleLinks", visibleLinks)
+    return visibleLinks;
+  })
+};
 
 // Performs a shallow search to find links connected to the target node
-function shallow_search(adjecancyMap, target, threshold) {
-  var new_links = [];
-  const neighbors = adjecancyMap.get(target) || [];
-  for (const neighbor of neighbors) {
-    if (neighbor.value < threshold) break;
-    new_links.push({
-      source: neighbor.direction === "asSource" ? target : neighbor.neighbor,
-      target: neighbor.direction === "asTarget" ? target : neighbor.neighbor,
-      value: neighbor.value
-    })
-  }
-  return new_links;
-}
+function shallow_search(adjecancyMap, target, threshold){
+      var new_links = [];
+      const neighbors = adjecancyMap.get(target) || [];
+      for (const neighbor of neighbors) {
+        if (neighbor.value < threshold) break;
+        new_links.push({
+          source: neighbor.direction === "asSource" ? target : neighbor.neighbor,
+          target: neighbor.direction === "asTarget" ? target : neighbor.neighbor,
+          value: neighbor.value
+        })}
 
+      return new_links;
+}
 // Builds adjecancy map for every node on in links
 // each node has this structure Map=[node, [{neighbor, value, direction}]]
 function buildAdjencancyMap(links) {
