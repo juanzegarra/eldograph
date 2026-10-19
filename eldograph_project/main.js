@@ -1,6 +1,6 @@
-import * as graph from './graph_manipulation'
-import * as read from './getFiles'
-import * as taxonomy from './taxonomy'
+import * as graph from './graph_manipulation.js'
+import * as read from './getFiles.js'
+import * as taxonomy from './taxonomy.js'
 import * as draw from './draw.js'
 
 var links;
@@ -217,7 +217,7 @@ run_command.addEventListener("click", (e) => {
     new_links = shallow_search(links, itemSelecionado);
   }
 
-    renderGraph(new_links);
+    draw.renderGraph(new_links);
 });
 
 

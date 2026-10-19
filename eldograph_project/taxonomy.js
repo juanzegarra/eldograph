@@ -1,4 +1,12 @@
 // Append elvels of
+function applyTaxonColoring(ancestorMap, lastCircleSelection, lastTocolor, lastTextSelection) {
+  buildTaxonNumbering(ancestorMap);
+  if (!lastCircleSelection) return;
+  lastCircleSelection.style(lastTocolor, function(d) { return nodeColor(d); });
+  if (lastTextSelection) lastTextSelection.text(nodeLabel);
+  renderTaxonLegend();
+}
+
 
 function populateAncestorLevelDropdown(listaSugestoesTaxon) {
   listaSugestoesTaxon.innerHTML = '<option value="">— none —</option>';
@@ -40,11 +48,7 @@ function nodeColor(d) {
 
 // Recolors the currently drawn graph in place (no redraw / no re-layout)
 // after the "color by ancestor" dropdown changes.
-function applyTaxonColoring(lastCircleSelection) {
-  if (!lastCircleSelection) return;
-  lastCircleSelection.style(lastTocolor, function(d) { return nodeColor(d); });
-  renderTaxonLegend();
-}
+
 
 // Builds { ancestorName: color } for every node currently on screen that
 // has an ancestor at the chosen level. Skips nodes with no mapping instead
@@ -75,13 +79,7 @@ function nodeLabel(d) {
   return anc ? d.name + " (n" + taxonNumbering[anc] + ")" : d.name;
 }
 
-function applyTaxonColoring(ancestorMap, lastCircleSelection, lastTocolor, lastTextSelection) {
-  buildTaxonNumbering(ancestorMap);
-  if (!lastCircleSelection) return;
-  lastCircleSelection.style(lastTocolor, function(d) { return nodeColor(d); });
-  if (lastTextSelection) lastTextSelection.text(nodeLabel);
-  renderTaxonLegend();
-}
+
 
 // (Re)draws the color legend as a plain HTML overlay on top of #graph —
 // not inside the SVG, since <div> isn't a valid SVG element and doesn't

@@ -1,4 +1,3 @@
-import renderTaxonLegend from './taxonomy'
 
 
 // One place that builds the table + graph, so every entry point behaves the same
@@ -8,6 +7,125 @@ function renderGraph(new_links) {
   draw(new_links);
   enrichBtn.disabled = false;
   derichBtn.disabled = enrichHistory.length === 0;
+}
+// Function to build table
+function make_table(new_links) {
+
+    var node_count = {};
+    var target_count = {};
+    var source_count = {};
+
+    new_links.forEach(function(link) {
+      if (Number(link.value) < threshold) {
+        return;
+      }
+
+      var source = typeof link.source === "object"
+        ? link.source.name
+        : link.source;
+
+      var target = typeof link.target === "object"
+        ? link.target.name
+        : link.target;
+
+      if (source != null) {
+        node_count[source] = (node_count[source] || 0) + 1;
+        source_count[source] = (source_count[source] || 0) + 1;
+      }
+
+      if (target != null) {
+        node_count[target] = (node_count[target] || 0) + 1;
+        target_count[target] = (target_count[target] || 0) + 1;
+      }
+    });
+
+    console.log(node_count);
+    var sorted = Object.entries(node_count)
+        .sort(function(a, b) {
+            return b[1] - a[1];
+        });
+
+    var rows =
+        '<table>' +
+        '<tr><th>Node</th><th>Connections</th><th>as Source</th><th>as Target</th></tr>';
+
+    sorted.forEach(function(entry) {
+        rows +=
+            '<tr>' +
+            '<td>' + entry[0] + '</td>' +
+            '<td>' + entry[1] + '</td>' +
+            '<td>' + (source_count[entry[0]] || 0) + '</td>' +
+            '<td>' + (target_count[entry[0]] || 0) + '</td>' +
+            '</tr>';
+    });
+
+    rows += '</table>';
+
+    table.innerHTML = rows;
+}
+
+// (Re)draws the color legend as a plain HTML overlay on top of #graph —
+// not inside the SVG, since <div> isn't a valid SVG element and doesn't
+// render/position there. Safe to call any time (after a redraw, or after
+// just recoloring via the dropdown) since it always clears the old one first.
+function renderTaxonLegend(colorByTaxon, lastNodesMap, ancestorMap){
+    d3.select("#graph").selectAll(".color-legend").remove();   // old HTML overlay, if any
+
+    var svgEl = d3.select("svg#graphResult");
+    if (svgEl.empty()) return;
+    svgEl.selectAll(".color-legend-svg").remove();
+
+    var legendObj = get_taxon_legend(colorByTaxon, lastNodesMap);
+    var taxonNumbering = buildTaxonNumbering(ancestorMap)
+    var taxonNames = Object.keys(legendObj).sort(function(a, b) {
+        return taxonNumbering[a] - taxonNumbering[b];
+    });
+    if (taxonNames.length === 0) return;
+
+    var svgHeight = +svgEl.attr("height");
+    var rowH = 18, pad = 10, maxRows = 16;          // wrap into extra columns after 16 rows
+    var rows = Math.min(taxonNames.length, maxRows);
+    var cols = Math.ceil(taxonNames.length / maxRows);
+
+    var labels = taxonNames.map(function(t) { return t + " (n" + taxonNumbering[t] + ")"; });
+    var colW = Math.max.apply(null, labels.map(function(l) { return l.length; })) * 6 + 30;
+
+    // lower-left corner: 20px from the left edge, 20px above the bottom edge
+    var g = svgEl.append("g")
+        .attr("class", "color-legend-svg")
+        .attr("transform", "translate(20," + (svgHeight - 20 - rows * rowH - 2 * pad) + ")")
+        .style("pointer-events", "none");           // don't block dragging nodes underneath
+
+    // background panel so the text stays readable over links
+    g.append("rect")
+        .attr("width", cols * colW + pad)
+        .attr("height", rows * rowH + 2 * pad)
+        .attr("rx", 6)
+        .style("fill", "#fff")
+        .style("fill-opacity", 0.85)
+        .style("stroke", "#d0d5dd");
+
+    var items = g.selectAll(".legend-item-svg")
+        .data(taxonNames)
+        .enter().append("g")
+        .attr("transform", function(d, i) {
+            var col = Math.floor(i / maxRows), row = i % maxRows;
+            return "translate(" + (pad + col * colW) + "," + (pad + row * rowH + rowH / 2) + ")";
+        });
+
+    items.append("circle")
+        .attr("r", 5)
+        .attr("cx", 5)
+        .style("fill", function(t) { return legendObj[t]; })
+        .style("stroke", "#fff")
+        .style("stroke-width", 1);
+
+    items.append("text")
+        .attr("x", 16)
+        .attr("y", 4)
+        .style("font", "11px sans-serif")
+        .style("fill", "#1f2430")
+        .text(function(t) { return t + " (n" + taxonNumbering[t] + ")"; });
 }
 
 

@@ -1,5 +1,4 @@
-import * as d3 from "d3";
-import populateAncestorLevelDropdown from './taxonomy'
+import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
 
 const files = {
    "genus_results_0.05.json" : "genus",
@@ -84,7 +83,6 @@ function get_taxon_file(taxon_file, links, taxonomyLineage){
             return;
           }
 
-          populateAncestorLevelDropdown();
           taxonomyLineage = loadTaxonomyLineage(taxon_level);
 
       });
