@@ -1,15 +1,3 @@
-
-// Performs a shallow search to find links connected to the target node
-function shallow_search(links, target) {
-  var new_links = [];
-  links.forEach(function(link) {
-    if (link.source === target || link.target === target) {
-      new_links.push(link);
-    }
-  });
-  return new_links;
-}
-
 //funcao de breadth based search
 function getSubgraph(startNode, maxDepth, adjecancyMap, threshold) {
     var visited = new Set();
@@ -28,23 +16,31 @@ function getSubgraph(startNode, maxDepth, adjecancyMap, threshold) {
         if (edge.value < threshold) break;
 
         if (!visited.has(edge)) {
-          visited.add(edge);
+          visited.add(edge.neighbor);
           queue.push({ node: edge.neighbor, depth: current.depth+1})
         }
       }
-    };
-    return visited;
+  };
+  let new_links = get_new_links(visible_Nodes, threshold, adjecancyMap);
+    return new_links;
 }
 
 // Filters links to only include those between visible nodes
-function get_new_links(visible_Nodes, links){
+function get_new_links(visible_Nodes, threshold, adjecancyncyMap){
   var visibleLinks = [];
-  links.forEach(function(link) {
-    if (visible_Nodes.has(link.source) && visible_Nodes.has(link.target)) {
-      visibleLinks.push(link);
-    }
-  });
-
+  visible_Nodes.forEach(function (node) {
+    const neighbors = adjacencyMap[node];
+    for (const neighbor of neighbors) {
+      if (neighbor.value >= threshold)
+      visibleLinks.push({
+      source: neighbor.direction === "asSource" ? node : neighbor.neighbor,
+      target: neighbor.direction === "asTarget" ? node : neighbor.neighbor,
+      value: neighbor.value
+      })
+      else {
+        break
+      }
+  }
   console.debug("visibleLinks", visibleLinks)
   return visibleLinks;
 }

@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-
+import populateAncestorLevelDropdown from './taxonomy'
 
 const files = {
    "genus_results_0.05.json" : "genus",
@@ -47,7 +47,8 @@ var superiorTaxonLevelsToDisplay = null;
 
 function loadTaxonomyLineage(level) {
   var lineageFile = "taxa_to_write_" + level + ".json";
-  d3.json(lineageFile, function(error, data) {
+  let taxonomyLineage;
+  d3.json(lineageFile, function (error, data) {
     if (error) {
       console.error("Could not load taxonomy lineage file:", lineageFile, error);
       taxonomyLineage = null;
@@ -56,16 +57,16 @@ function loadTaxonomyLineage(level) {
     taxonomyLineage = data;
     // in case the user already picked a coloring level before this
     // finished loading, build the map now instead of waiting for another change
-    if (colorByTaxon) {
-      ancestorMap = buildAncestorMap(colorByTaxon);
-      applyTaxonColoring();
-    }
+
+    return taxonomyLineage;
   });
 }
 
-function get_taxon_file(taxon_file){
 
-      d3.json(taxon_file.value, function(error, data) {
+
+function get_taxon_file(taxon_file, links, taxonomyLineage){
+
+      d3.json(taxon_file, function(error, data) {
 
           if (error) {
               console.error("Error loading JSON:", error);
@@ -84,7 +85,7 @@ function get_taxon_file(taxon_file){
           }
 
           populateAncestorLevelDropdown();
-          loadTaxonomyLineage(taxon_level);
+          taxonomyLineage = loadTaxonomyLineage(taxon_level);
 
       });
 
