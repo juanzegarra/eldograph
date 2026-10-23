@@ -249,8 +249,6 @@ button:active {
   width: 100%;
 }
 
-<<<<<<< HEAD
-=======
 .action-group {
   display: flex;
   align-items: center;
@@ -284,7 +282,6 @@ button:active {
   opacity: 0.7;
 }
 
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 div#graph {
   position: relative;
   margin: 0;
@@ -483,10 +480,6 @@ text {
         <label for="depth_n">Depth of search</label>
         <input type="number" min="0" id="depth_n">
 	</div>
-<<<<<<< HEAD
-	<div class="button">
-	<button id="run" type="button">▶ Generate Graph</button>
-=======
 	<div class="action-group">
 		<button id="run" type="button">▶ Generate Graph</button>
 		<button id="enrich" type="button" disabled
@@ -497,7 +490,6 @@ text {
 		        title="Undo the most recent addition">
 			<span class="icon">−</span> Undo last addition
 		</button>
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 	</div>
 </form>
 <div class="dropdown-container" id="taxon-color-container">
@@ -508,10 +500,7 @@ text {
 		</select>
 	</div>
 </div>
-<<<<<<< HEAD
-=======
 
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 <div id="graph"></div>
 <div id="table"></div>
 <script>
@@ -521,12 +510,9 @@ var links;
 // get the data
 // NOTE: keys here must match the <option value="..."> list in the #taxon
 // select exactly, or lookups below silently return undefined.
-<<<<<<< HEAD
-=======
 // não cortar legenda
 // susbtituir cor de legenda numeração
 // botao de menos
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 const files = {
    "genus_results_0.05.json" : "genus",
    "genus_results_0.1.json" : "genus",
@@ -598,10 +584,7 @@ var ancestorMap = {};            // node name -> ancestor name, for colorByTaxon
 var taxonomyLineage = null;      // raw taxa_to_write_<level>.json: node name -> [id, ancestor names... broad to narrow]
 var taxonColorScale = d3.scale.category20b();
 
-<<<<<<< HEAD
-=======
 
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 // Get file with nodes from the selected taxon file, then (once loaded)
 // fetch the matching taxonomy-lineage lookup and figure out which
 // ancestor levels are available for coloring.
@@ -614,21 +597,9 @@ taxonSelect.addEventListener("change", () => {
   get_taxon_file(taxonSelect);
 });
 
-<<<<<<< HEAD
-// Variables for table sorting
-var currentSortColumn = null;
-var isAscending = true;
-
 taxonSelect.dispatchEvent(new Event("change"));
 
 
-
-
-=======
-taxonSelect.dispatchEvent(new Event("change"));
-
-
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 function get_taxon_file(taxon_file){
 
       d3.json(taxon_file.value, function(error, data) {
@@ -686,7 +657,7 @@ function loadTaxonomyLineage(level){
       console.error("Could not load taxonomy lineage file:", lineageFile, error);
       taxonomyLineage = null;
       return;
-    }
+    }applyTaxonColoring
     taxonomyLineage = data;
     // in case the user already picked a coloring level before this
     // finished loading, build the map now instead of waiting for another change
@@ -850,56 +821,60 @@ run_command.addEventListener("click", (e) => {
 
   if (!itemSelecionado) return;
 
-  var new_links;
+  var new_links, order;
 
   if (itemSelecionado === "all") {
     new_links = links;
+    order = orderFromLinks(links, null);
   } else if (profundidade.value > 0) {
     var new_nodes = getSubgraph(itemSelecionado, Number(profundidade.value), links);
     new_links = get_new_links(new_nodes, links);
+    order = Array.from(new_nodes);   // a Set keeps insertion order: start node first, then BFS discovery order
   } else {
     new_links = shallow_search(links, itemSelecionado);
+    order = orderFromLinks(new_links, itemSelecionado);
   }
-<<<<<<< HEAD
-  table_obj = make_table(new_links);
-  draw(new_links);
-=======
 
-  enrichHistory = [];     // a fresh graph starts a fresh history
+  revealOrder = order;
+  enrichHistory = []; // Reset history with every run click
   renderGraph(new_links);
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
+
 });
 
 
 //funcao de breadth based search
 
 function getSubgraph(startNode, maxDepth, links) {
-    var visited = new Set();
-    var queue = [];
-    visited.add(startNode);
-    queue.push({ node: startNode, depth: 0 });
+    var visited = new Set([startNode]);   // insertion order = reveal order
+    var frontier = [startNode];
 
-    while (queue.length > 0) {
-        var current = queue.shift();
-        if (current.depth >= maxDepth) continue;
+    for (var depth = 0; depth < maxDepth && frontier.length > 0; depth++) {
+        var frontierSet = new Set(frontier);
+        var best = new Map();             // new node -> strongest link value reaching it
 
         links.forEach(function(link) {
-            if (link.value < threshold) return; // skip weak edges — same cutoff as draw()
+            var v = Number(link.value);
+            if (v < threshold) return;    // same cutoff as draw()
 
             var neighbor = null;
-            if (link.source === current.node) neighbor = link.target;
-            else if (link.target === current.node) neighbor = link.source;
+            if (frontierSet.has(link.source)) neighbor = link.target;
+            else if (frontierSet.has(link.target)) neighbor = link.source;
 
-            if (neighbor !== null && !visited.has(neighbor)) {
-                visited.add(neighbor);
-                queue.push({ node: neighbor, depth: current.depth + 1 });
-            }
+            if (neighbor === null || visited.has(neighbor)) return;
+            if (!best.has(neighbor) || v > best.get(neighbor)) best.set(neighbor, v);
         });
+
+        // strongest connection first within this level
+        var next = Array.from(best.entries())
+            .sort(function(a, b) { return b[1] - a[1]; })
+            .map(function(e) { return e[0]; });
+
+        next.forEach(function(n) { visited.add(n); });
+        frontier = next;
     }
 
-    return visited;
+    return visited;   // a Set: start node, then depth 1 by strength, depth 2 by strength, ...
 }
-
 // Filters links to only include those between visible nodes
 function get_new_links(visible_Nodes, links){
   var visibleLinks = [];
@@ -924,8 +899,6 @@ function shallow_search(links, target) {
   return new_links;
 }
 
-<<<<<<< HEAD
-=======
 // Enrich the graph and include nearest node closest (highest threashold value) to present nodes
 
 var currentLinks = null;                       // link set behind the graph on screen
@@ -933,6 +906,7 @@ var enrichBtn = document.getElementById("enrich");
 var derichBtn = document.getElementById("derich");
 var addedNodes = []; // remember the number of added nodes
 var previousThresholds = []; // remember previous threshold values
+var revealOrder = [];   // node names in the order they appeared on the graph
 
 // One place that builds the table + graph, so every entry point behaves the same
 function renderGraph(new_links) {
@@ -941,6 +915,7 @@ function renderGraph(new_links) {
   draw(new_links);
   enrichBtn.disabled = false;
   derichBtn.disabled = enrichHistory.length === 0;
+  table_obj = make_table(new_links);
 }
 
 function syncThresholdUI(t) {
@@ -956,8 +931,10 @@ function enrich_graph() {
     visible.add(itemSelecionado);
   }
 
+  var orderBefore = revealOrder.slice();
   // strongest link with exactly one endpoint on screen => it brings in a new node
   var best = null;
+
   links.forEach(function(link) {
     if (visible.has(link.source) === visible.has(link.target)) return;
     if (best === null || Number(link.value) > Number(best.value)) best = link;
@@ -979,7 +956,8 @@ function enrich_graph() {
   threshold = Math.min(threshold, Number(best.value));
   syncThresholdUI(threshold);
 
-  enrichHistory.push({ node: bestNode, visible: visibleBefore, threshold: thresholdBefore });
+  revealOrder.push(bestNode);
+  enrichHistory.push({ node: bestNode, visible: visibleBefore, threshold: thresholdBefore, order: orderBefore });
   console.log(enrichHistory);
   renderGraph(get_new_links(visible, links));
 }
@@ -989,6 +967,7 @@ function derich_graph() {
   if (enrichHistory.length === 0 || !links) return;
 
   var last = enrichHistory.pop();
+  revealOrder = last.order;
   threshold = last.threshold;
   syncThresholdUI(threshold);
   console.log("Undo: removed", last.node);
@@ -998,9 +977,7 @@ function derich_graph() {
 
 enrichBtn.addEventListener("click", enrich_graph);
 derichBtn.addEventListener("click", derich_graph);
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 // Creates a table ordered by most-linked nodes, and renders it into #table.
-
 function make_table(new_links) {
 
     var node_count = {};
@@ -1037,7 +1014,6 @@ function make_table(new_links) {
             return b[1] - a[1];
         });
 
-<<<<<<< HEAD
     var table_obj = {};
 
     sorted.forEach(function(entry) {
@@ -1055,11 +1031,6 @@ function make_table(new_links) {
         '<th data-col="Connections">Connections<span class="sort-indicator"></span></th>' +
         '<th data-col="as Source">as Source<span class="sort-indicator"></span></th>' +
         '<th data-col="as Target">as Target<span class="sort-indicator"></span></th></tr>';
-=======
-    var rows =
-        '<table>' +
-        '<tr><th>Node</th><th>Connections</th><th>as Source</th><th>as Target</th></tr>';
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 
     sorted.forEach(function(entry) {
         rows +=
@@ -1073,7 +1044,6 @@ function make_table(new_links) {
 
     rows += '</table>';
 
-<<<<<<< HEAD
     currentSortColumn = "Node";
     isAscending = true;
 
@@ -1149,11 +1119,6 @@ function updateHeaderIcons() {
     }
 
 
-=======
-    table.innerHTML = rows;
-}
-
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 // Decides a node's fill/stroke color: ancestor-based color takes priority
 // when the user has picked a level and we have an entry for this node,
 // otherwise falls back to the original score-based / default coloring.
@@ -1163,14 +1128,6 @@ function nodeColor(d) {
   }
   if (isNumber(d.score) && d.score >= 0) return color(d.score);
   return default_node_color;
-}
-
-// Recolors the currently drawn graph in place (no redraw / no re-layout)
-// after the "color by ancestor" dropdown changes.
-function applyTaxonColoring() {
-  if (!lastCircleSelection) return;
-  lastCircleSelection.style(lastTocolor, function(d) { return nodeColor(d); });
-  renderTaxonLegend();
 }
 
 // Builds { ancestorName: color } for every node currently on screen that
@@ -1188,21 +1145,39 @@ function get_taxon_legend(){
     return legend_Obj;
 }
 
-<<<<<<< HEAD
-=======
+function orderFromLinks(linkArr, start) {
+  var seen = new Set(), order = [];
+  function add(n) { if (n != null && !seen.has(n)) { seen.add(n); order.push(n); } }
+  add(start);
+  linkArr.forEach(function(l) { add(l.source); add(l.target); });
+  return order;
+}
+
 var taxonNumbering = {};      // ancestor name -> stable number
 var lastTextSelection = null; // next to lastCircleSelection
 
 function buildTaxonNumbering() {
   taxonNumbering = {};
-  Array.from(new Set(Object.values(ancestorMap))).sort().forEach(function(name, i) {
-    taxonNumbering[name] = i + 1;
+  if (!lastNodesMap) return;
+
+  // reveal order first; any on-screen node not in it (e.g. "all" mode) follows in draw order
+  var seen = new Set(), ordered = [];
+  revealOrder.concat(Object.keys(lastNodesMap)).forEach(function(n) {
+    if (lastNodesMap[n] && !seen.has(n)) { seen.add(n); ordered.push(n); }
+  });
+
+  var next = 1;
+  ordered.forEach(function(node) {
+    var anc = ancestorMap[node];
+    if (anc && !Object.prototype.hasOwnProperty.call(taxonNumbering, anc)) {
+      taxonNumbering[anc] = next++;
+    }
   });
 }
 
 function nodeLabel(d) {
   var anc = colorByTaxon && ancestorMap[d.name];
-  return anc ? d.name + " (n" + taxonNumbering[anc] + ")" : d.name;
+  return anc ? d.name + " (L" + taxonNumbering[anc] + ")" : d.name;
 }
 
 function applyTaxonColoring() {
@@ -1213,51 +1188,11 @@ function applyTaxonColoring() {
   renderTaxonLegend();
 }
 
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 // (Re)draws the color legend as a plain HTML overlay on top of #graph —
 // not inside the SVG, since <div> isn't a valid SVG element and doesn't
 // render/position there. Safe to call any time (after a redraw, or after
 // just recoloring via the dropdown) since it always clears the old one first.
 function renderTaxonLegend(){
-<<<<<<< HEAD
-    // HTML overlay — for on-screen display only, unchanged
-    d3.select("#graph").selectAll(".color-legend").remove();
-
-    var legendObj = get_taxon_legend();
-    var taxonNames = Object.keys(legendObj);
-
-    var legend = d3.select("#graph").append("div")
-        .attr("class", "color-legend");
-
-    taxonNames.forEach(function(taxon) {
-        legend.append("div")
-            .attr("class", "legend-item")
-            .html("<span class='legend-circle' style='background-color:" + legendObj[taxon] + ";'></span> " + taxon);
-    });
-
-    // SVG-native duplicate — this is what actually shows up in the download
-    var svgEl = d3.select("svg#graphResult");
-    svgEl.selectAll(".color-legend-svg").remove();
-
-    if (taxonNames.length === 0 || svgEl.empty()) return;
-
-    var svgHeight = +svgEl.attr("height");
-
-    var svgLegend = svgEl.append("g")
-        .attr("class", "color-legend-svg")
-        .attr("transform", "translate(20," + (svgHeight - 20 - taxonNames.length * 18) + ")");
-
-    var items = svgLegend.selectAll(".legend-item-svg")
-        .data(taxonNames)
-        .enter().append("g")
-        .attr("transform", function(d, i) { return "translate(0," + (i * 18) + ")"; });
-
-    items.append("circle")
-        .attr("r", 6)
-        .attr("cx", 6)
-        .attr("cy", 0)
-        .style("fill", function(taxon) { return legendObj[taxon]; })
-=======
     d3.select("#graph").selectAll(".color-legend").remove();   // old HTML overlay, if any
 
     var svgEl = d3.select("svg#graphResult");
@@ -1305,24 +1240,15 @@ function renderTaxonLegend(){
         .attr("r", 5)
         .attr("cx", 5)
         .style("fill", function(t) { return legendObj[t]; })
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
         .style("stroke", "#fff")
         .style("stroke-width", 1);
 
     items.append("text")
-<<<<<<< HEAD
-        .attr("x", 18)
-        .attr("y", 4)
-        .style("font", "10px sans-serif")
-        .style("fill", "#1f2430")
-        .text(function(taxon) { return taxon; });
-=======
         .attr("x", 16)
         .attr("y", 4)
         .style("font", "11px sans-serif")
         .style("fill", "#1f2430")
         .text(function(t) { return t + " (n" + taxonNumbering[t] + ")"; });
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 }
 // Begins to draw the graph
 function draw(links){
@@ -1371,6 +1297,7 @@ function draw(links){
 
 	lastNodesMap = nodes; // so renderTaxonLegend()/applyTaxonColoring() can see the current graph's nodes
 
+	buildTaxonNumbering();
 	function isConnected(a, b) {
         return linkedByIndex[b.name + "," + a.name]|| a.name == b.name;// || linkedByIndex[a.name + "," + b.name];
     }
@@ -1512,11 +1439,7 @@ function draw(links){
 		.attr("x", 12)
 		.attr("dy", ".35em")
 		.attr("style", "fill:#000;font:10px sans-serif;pointer-events:none")
-<<<<<<< HEAD
-		.text(function(d) { return d.name; });
-=======
 		.text(nodeLabel);
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 
 	var text = node.selectAll("text")
 		.style("font-size", nominal_text_size + "px");
@@ -1535,11 +1458,7 @@ function draw(links){
         var midY = bounds.y + bounds.height / 2;
         var translate = [width / 2 - scale * midX, height / 2 - scale * midY];
 
-<<<<<<< HEAD
-        svg.transition().duration(500)
-=======
         svg.transition().duration(300)
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
             .call(zoom.translate(translate).scale(scale).event);
    	}
 
@@ -1587,11 +1506,7 @@ function draw(links){
 			return "fill:none;stroke-width:1.5px;stroke:" + css[d.type];
 		})
 		.attr("d", function(d){
-<<<<<<< HEAD
-			var position = 20 + (d.pos*20);
-=======
 			var position = 25 + (d.pos*20);
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 			return "M 150 "+position+" l 25 0";
 		});
 	svg.append("svg:g").selectAll("text")
@@ -1627,10 +1542,7 @@ function draw(links){
 	// keep references so the "color by ancestor" dropdown can recolor
 	// this same graph later without a full redraw
 	lastCircleSelection = circle;
-<<<<<<< HEAD
-=======
 	lastTextSelection = text;
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
 	lastTocolor = tocolor;
 
 	node.on("mouseover", function(d) {
@@ -1759,7 +1671,6 @@ function updateTextThreshold(val) {
 }
 
 function download(){
-<<<<<<< HEAD
     var svgEl = document.getElementById("graphResult");
     if (!svgEl) {
         alert("Generate a graph first before downloading.");
@@ -1788,36 +1699,6 @@ function download(){
     document.body.removeChild(link);
 
     URL.revokeObjectURL(url);
-=======
-	//get svg element.
-	var svg = document.getElementById("graphResult");
-
-	//get svg source.
-	var serializer = new XMLSerializer();
-	var source = serializer.serializeToString(svg);
-
-	//add name spaces.
-	if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
-		source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
-	}
-	if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
-		source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
-	}
-
-	//add xml declaration
-	source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
-
-	//convert svg source to URI data scheme.
-	var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
-
-	//set url value to a element's href attribute.
-	window.open(url, '_blank');
-	//you can download svg file by right click menu.
->>>>>>> c49d79b (created new buttons and beginning to separate into different files)
-}
-
-function isNumber(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 </script>
