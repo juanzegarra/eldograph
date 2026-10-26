@@ -208,7 +208,7 @@ button:active {
   position: relative;
 }
 
-#sugestoes {
+.sugestoes {
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
@@ -222,7 +222,7 @@ button:active {
   z-index: 10;
 }
 
-#sugestoes div.suggestion-item {
+.sugestoes div.suggestion-item {
   padding: 7px 12px;
   font-size: 13px;
   color: var(--text);
@@ -230,8 +230,8 @@ button:active {
   transition: background 0.1s ease;
 }
 
-#sugestoes div.suggestion-item:hover,
-#sugestoes div.suggestion-item.active {
+.sugestoes div.suggestion-item:hover,
+.sugestoes div.suggestion-item.active {
   background: #eef1fd;
 }
 
@@ -471,11 +471,9 @@ text {
 	<div class="param" style="background:#FFF">
 		<button type="button" id="myBtn" onclick="download()">⬇ Download</button>
 	</div>
-	<div class="textbox" id="busca-box" style="background:#FFF;" autocomplete="new-password" name="busca_clade_xyz" >
-	    <label for="busca">Clade</label>
-		<input type="text" id="busca" placeholder="Type your clade...">
-	    <div id="sugestoes"></div>
-	</div>
+	<div id="clade-search-container"></div>
+	<div id="second-search-container"></div>
+
 	<div class="textbox" id="depth_n-box" placeholder="0" style="border: 1px solid #ccc; padding: 8px; width: 200px;">
         <label for="depth_n">Depth of search</label>
         <input type="number" min="0" id="depth_n">
@@ -500,6 +498,11 @@ text {
 		</select>
 	</div>
 </div>
+<label class="freeze-toggle">
+  <input type="checkbox" id="stopMark">
+  Stop node movement in the graph
+</label>
+
 
 <div id="graph"></div>
 <div id="table"></div>
@@ -544,19 +547,36 @@ var nominal_stroke = 1.5;
 var nominal_text_size = 10;
 var json_file = null
 var table = document.getElementById("table");
+var stopMark = document.getElementById("stopMark");
+var lastForce = null;
+
+function applyFreeze(f) {
+  if (!f) return;
+  var freeze = stopMark.checked;
+  f.nodes().forEach(function (d) {
+    if (freeze) { d.px = d.x; d.py = d.y; d.fixed |= 8; }
+    else        { d.fixed &= ~8; }
+  });
+  if (freeze) f.stop(); else f.resume();
+}
+
+stopMark.addEventListener("change", function () { applyFreeze(lastForce); });
 
 // Kept so a change to the "color by ancestor" dropdown can recolor the
 // graph that's already on screen, without having to redraw it.
 var lastCircleSelection = null;
 var lastTocolor = "fill";
 var lastNodesMap = null; // node name -> node object, from the most recent draw()
+var adjacencyMap = null; // node name -> [{neighbor, value, direction}, ...] for the most recent draw()
 
 var input = document.getElementById("busca");
 var listaSugestoes = document.getElementById("sugestoes");
 var listaSugestoesTaxon = document.getElementById("taxon_select_box");
 var profundidade = document.getElementById("depth_n");
 let itemSelecionado = null;
+let itemSelecionado2 = null;
 var activeIndex = -1;
+var savedZoomTranslate = null, savedZoomScale = null;
 
 var taxonSelect = document.getElementById("taxon"); // the element, never reassigned
 let selectedTaxonFile = taxonSelect.value;             // the string value
@@ -583,6 +603,7 @@ var colorByTaxon = null;         // currently selected ancestor level, e.g. "fam
 var ancestorMap = {};            // node name -> ancestor name, for colorByTaxon
 var taxonomyLineage = null;      // raw taxa_to_write_<level>.json: node name -> [id, ancestor names... broad to narrow]
 var taxonColorScale = d3.scale.category20b();
+var savedNodePositions = {};
 
 
 // Get file with nodes from the selected taxon file, then (once loaded)
@@ -600,6 +621,7 @@ taxonSelect.addEventListener("change", () => {
 taxonSelect.dispatchEvent(new Event("change"));
 
 
+
 function get_taxon_file(taxon_file){
 
       d3.json(taxon_file.value, function(error, data) {
@@ -611,7 +633,6 @@ function get_taxon_file(taxon_file){
 
           links = data;
 
-          console.log("Loaded:", links);
           console.warn("Data loaded successfully.");
           taxon_level = files[taxon_file.value];
 
@@ -622,10 +643,32 @@ function get_taxon_file(taxon_file){
 
           populateAncestorLevelDropdown();
           loadTaxonomyLineage(taxon_level);
+          adjacencyMap = buildAdjencancyMap(links);
+          console.log("Adjacency map built for taxon level:", taxon_level, "with", adjacencyMap.size, "nodes.");
 
       });
 
 }
+
+// Builds adjacency map for every node on in links
+// each node has this structure Map=[node, [{neighbor, value, direction}]]
+function buildAdjencancyMap(links) {
+  var adj = new Map();
+  function push(key, info) {
+    if (!adj.has(key)) adj.set(key, []);
+    adj.get(key).push(info);
+  }
+  links.forEach(function (link) {
+    var v = Number(link.value);
+    push(link.source, { neighbor: link.target, value: v, direction: "asSource" });
+    push(link.target, { neighbor: link.source, value: v, direction: "asTarget" });
+  });
+  adj.forEach(function (list) {
+    list.sort(function (a, b) { return b.value - a.value; });   // strongest first
+  });
+  return adj;
+}
+
 
 // Populate the "color nodes by ancestor level" dropdown with every level
 // broader than the currently loaded one (this only runs once taxon_level
@@ -642,6 +685,79 @@ function populateAncestorLevelDropdown(){
     opt.textContent = level.charAt(0).toUpperCase() + level.slice(1);
     listaSugestoesTaxon.appendChild(opt);
   });
+}
+
+// Initialize Original Clade Box
+createSearchBox("clade-search-container", {
+    label: "Clade",
+    placeholder: "Type your clade...",
+    allowAll: true, // Allow the "All" option for this first box
+    getData: () => adjacencyMap, // Passed as a function to fetch the LATEST map when typing
+    onSelect: (val) => {
+        itemSelecionado = val; // Updates the global variable for search
+    }
+});
+
+// Initialize Second Box
+createSearchBox("second-search-container", {
+    label: "Search path to another node",
+    placeholder: "Type your other value...",
+    allowAll: false, // Disable the "All" option for this second box
+    getData: () => adjacencyMap, // Or whatever map this second box uses
+    onSelect: (val) => {
+        console.log("Second box selection:", val);
+        itemSelecionado2 = val; // Updates the global variable for search
+    }
+});
+
+// Implements a "Widest Path" search to find the most robust path between two nodes.
+// It maximizes the bottleneck (the weakest link) along the path.
+function pathBetweenNodes(node1, node2, adjacencyMap) {
+  if (!node1 || !node2 || !adjacencyMap) return null;
+
+  let bestPathInfo = new Map();
+
+  // Initialize all nodes with a bottleneck of negative infinity
+  for (let key of adjacencyMap.keys()) {
+    bestPathInfo.set(key, { bottleneck: -Infinity, path: [] });
+  }
+
+  // The start node has infinite capacity to itself
+  bestPathInfo.set(node1, { bottleneck: Infinity, path: [node1] });
+
+  // Using an array as a simple queue (SPFA algorithm approach)
+  let queue = [node1];
+
+  while (queue.length > 0) {
+    let current = queue.shift();
+    let currentInfo = bestPathInfo.get(current);
+    let neighbors = adjacencyMap.get(current) || [];
+
+    for (let neighborInfo of neighbors) {
+      let neighbor = neighborInfo.neighbor;
+      let weight = neighborInfo.value;
+
+      // The capacity of this new path is bottlenecked by either the current path's capacity or the new edge
+      let pathBottleneck = Math.min(currentInfo.bottleneck, weight);
+
+      let neighborInfo_old = bestPathInfo.get(neighbor);
+
+      // If this new path provides a STRONGER weakest-link than the neighbor's currently known path
+      if (pathBottleneck > neighborInfo_old.bottleneck) {
+        bestPathInfo.set(neighbor, {
+          bottleneck: pathBottleneck,
+          path: [...currentInfo.path, neighbor]
+        });
+
+        // Add the neighbor back to the queue to propagate the better path
+        if (!queue.includes(neighbor)) {
+          queue.push(neighbor);
+        }
+      }
+    }
+  }
+
+  return bestPathInfo.get(node2);
 }
 
 // Loads taxa_to_write_<level>.json — produced by filter_taxallnomy.py —
@@ -712,170 +828,206 @@ $("form").change(function(event) {
     }
 });
 
-// Extract list of taxa inside a given taxon file (e.g. "genus_results_0.1.json")
-input.addEventListener("input", () => {
-  itemSelecionado = null;
-  activeIndex = -1;
-  if(!links) {
-    console.warn("No data loaded yet — select a taxon level first.");
-    return;
-  }
+//Factory function to create a search box with suggestions and selection handling
+function createSearchBox(containerId, config) {
+    const container = document.getElementById(containerId);
+    if (!container) return; // Failsafe if container isn't in HTML
 
-    const termo = input.value.toLowerCase().trim();
+    container.innerHTML = `
+        <div class="textbox" style="background:#FFF;" autocomplete="new-password">
+            <label>${config.label}</label>
+            <input type="text" class="busca-input" placeholder="${config.placeholder}">
+            <div class="sugestoes" style="position: absolute; top: calc(100% + 4px); left: 0; width: 100%; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-md); max-height: 180px; overflow-y: auto; z-index: 10;"></div>
+        </div>
+    `;
 
-    listaSugestoes.innerHTML = "";
+    // Ensure the parent container has relative positioning so suggestions anchor correctly
+    container.querySelector('.textbox').style.position = "relative";
 
-    // Always show "All" (displays all taxa in the file)
-    const allOption = document.createElement("div");
-    allOption.textContent = "All";
-    allOption.classList.add("suggestion-item");
-    allOption.addEventListener("click", () => {
-        itemSelecionado = "all";
-        input.value = "All";
+    const wrapper = container.querySelector(".textbox");
+    const input = container.querySelector(".busca-input");
+    const listaSugestoes = container.querySelector(".sugestoes");
+
+    let localItemSelecionado = null;
+    let activeIndex = -1;
+
+    input.addEventListener("input", () => {
+        localItemSelecionado = null;
+        activeIndex = -1;
+        if (config.onSelect) config.onSelect(null);   // typing invalidates the previous pick
+
+        // Use the getter function to fetch the latest map
+        const currentDataMap = config.getData();
+
+        if (!currentDataMap) {
+            console.warn("No data loaded yet — select a taxon level first.");
+            return;
+        }
+
+        const termo = input.value.toLowerCase().trim();
         listaSugestoes.innerHTML = "";
 
+        if (config.allowAll !== false) {      // wrap the existing "All" option block
+        const allOption = document.createElement("div");
+        allOption.textContent = "All";
+        allOption.classList.add("suggestion-item");
+        allOption.addEventListener("click", () => selectItem("All", "all"));
+        listaSugestoes.appendChild(allOption);
+        };
+        var filtrados = [];
+        var sources = new Set();
+
+        for (let key of currentDataMap.keys()) {
+            if (key.toLowerCase().startsWith(termo) && !sources.has(key)) {
+                sources.add(key);
+                filtrados.push(key);
+            }
+        }
+
+        filtrados.forEach(sourceName => {
+            const div = document.createElement("div");
+            div.textContent = sourceName;
+            div.classList.add("suggestion-item");
+            div.addEventListener("click", () => selectItem(sourceName, sourceName));
+            listaSugestoes.appendChild(div);
+        });
     });
 
-    listaSugestoes.appendChild(allOption);
+    function selectItem(displayValue, internalValue) {
+        localItemSelecionado = internalValue;
+        input.value = displayValue;
+        listaSugestoes.innerHTML = "";
+        if (config.onSelect) config.onSelect(internalValue);
+    }
 
-    var filtrados = [];
-    var sources = new Set();
-
-    // Filter taxa based on the search term
-    links.forEach(link => {
-        if (
-            link.source.toLowerCase().startsWith(termo) &&
-            !sources.has(link.source)
-        ) {
-            sources.add(link.source);
-            filtrados.push(link);
+    document.addEventListener("click", (e) => {
+        if (!wrapper.contains(e.target)) {
+            listaSugestoes.innerHTML = "";
         }
     });
 
-    // Display filtered taxa on susgetoes
-    filtrados.forEach(item => {
-        const div = document.createElement("div");
-        div.textContent = item.source;
-        div.classList.add("suggestion-item");
-        div.addEventListener("click", () => { itemSelecionado = item.source; input.value = item.source; listaSugestoes.innerHTML = ""; });
-        listaSugestoes.appendChild(div);
-      });
-});
+    document.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (localItemSelecionado) {
+            if (config.onSelect) config.onSelect(localItemSelecionado);
+            listaSugestoes.innerHTML = "";
+        }
+    });
 
-// Closes the suggestion when clicking outside the search box
-document.addEventListener("click", (e) => {
-if (!document.getElementById("busca-box").contains(e.target)) {
-  listaSugestoes.innerHTML = "";
-}
-});
+    input.addEventListener("keydown", (e) => {
+        var items = listaSugestoes.querySelectorAll(".suggestion-item");
+        if (items.length === 0) return;
 
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            activeIndex = (activeIndex + 1) % items.length;
+            highlightActive(items);
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            activeIndex = (activeIndex - 1 + items.length) % items.length;
+            highlightActive(items);
+        } else if (e.key === "Enter") {
+            e.preventDefault();
+            if (activeIndex >= 0 && activeIndex < items.length) {
+                items[activeIndex].click();
+            }
+        } else if (e.key === "Escape") {
+            listaSugestoes.innerHTML = "";
+            activeIndex = -1;
+        }
+    });
 
-// Handles keyboard navigation within the suggestion list
-input.addEventListener("keydown", (e) => {
-  var items = listaSugestoes.querySelectorAll(".suggestion-item");
-  if (items.length === 0) return;
-
-  if (e.key === "ArrowDown") {
-    e.preventDefault();
-    activeIndex = (activeIndex + 1) % items.length;
-    highlightActive(items);
-  } else if (e.key === "ArrowUp") {
-    e.preventDefault();
-    activeIndex = (activeIndex - 1 + items.length) % items.length;
-    highlightActive(items);
-  } else if (e.key === "Enter") {
-    e.preventDefault(); // stop the form from submitting on Enter — same reload issue as the button
-    if (activeIndex >= 0 && activeIndex < items.length) {
-      items[activeIndex].click(); // reuses your existing click handler logic
+    function highlightActive(items) {
+        items.forEach((item, i) => {
+            item.classList.toggle("active", i === activeIndex);
+        });
+        if (activeIndex >= 0) {
+            items[activeIndex].scrollIntoView({ block: "nearest" });
+        }
     }
-  } else if (e.key === "Escape") {
-    listaSugestoes.innerHTML = "";
-    activeIndex = -1;
-  }
-});
-
-// Highlights the active item in the suggestion list
-function highlightActive(items) {
-  items.forEach((item, i) => {
-    item.classList.toggle("active", i === activeIndex);
-  });
-  if (activeIndex >= 0) {
-    items[activeIndex].scrollIntoView({ block: "nearest" });
-  }
 }
 
 var run_command = document.getElementById("run")
 
 
 //só rodar se entradas estarem certas
+let eventTypes = ['click', 'submit'];
+eventTypes.forEach(eventType => {
+  run_command.addEventListener(eventType, (e) => {
+    e.preventDefault();
+    console.log("Generating for:", itemSelecionado, "depth:", profundidade.value);
 
-run_command.addEventListener("click", (e) => {
-  e.preventDefault();
+      if (!itemSelecionado) {
+        console.warn("No clade selected — click a suggestion from the dropdown first.");
+        return;
+      }
 
-  console.log("Generating for:", itemSelecionado, "depth:", profundidade.value);
+    if (!itemSelecionado) return;
 
-   if (!itemSelecionado) {
-     console.warn("No clade selected — click a suggestion from the dropdown first.");
-     return;
-   }
+    var new_links, order;
 
-  if (!itemSelecionado) return;
+    if (itemSelecionado === "all") {
+      new_links = links;
+      order = orderFromLinks(links, null);
+    } else if (itemSelecionado2) {
+      var pathInfo = pathBetweenNodes(itemSelecionado, itemSelecionado2, adjacencyMap);
+      if (!pathInfo || pathInfo.path.length < 2) {
+        console.warn("No path found between", itemSelecionado, "and", itemSelecionado2);
+        return;
+      }
+      threshold = Math.min(threshold, pathInfo.bottleneck);  // keep the path's weakest link visible
+      syncThresholdUI(threshold);
+      new_links = get_new_links(new Set(pathInfo.path), links);
+      order = pathInfo.path;
+    } else if (profundidade.value > 0) {
+      var new_nodes = getSubgraph(itemSelecionado, Number(profundidade.value), adjacencyMap);
+      new_links = get_new_links(new_nodes, links);
+      order = Array.from(new_nodes);
+    } else {
+      new_links = shallow_search(adjacencyMap, itemSelecionado, threshold);
+      order = orderFromLinks(new_links, itemSelecionado);
+    }
 
-  var new_links, order;
+    revealOrder = order;
+    enrichHistory = []; // Reset history with every run click
+    savedNodePositions = {};
+    renderGraph(new_links, false);
 
-  if (itemSelecionado === "all") {
-    new_links = links;
-    order = orderFromLinks(links, null);
-  } else if (profundidade.value > 0) {
-    var new_nodes = getSubgraph(itemSelecionado, Number(profundidade.value), links);
-    new_links = get_new_links(new_nodes, links);
-    order = Array.from(new_nodes);   // a Set keeps insertion order: start node first, then BFS discovery order
-  } else {
-    new_links = shallow_search(links, itemSelecionado);
-    order = orderFromLinks(new_links, itemSelecionado);
-  }
-
-  revealOrder = order;
-  enrichHistory = []; // Reset history with every run click
-  renderGraph(new_links);
-
+  });
 });
+
 
 
 //funcao de breadth based search
 
-function getSubgraph(startNode, maxDepth, links) {
-    var visited = new Set([startNode]);   // insertion order = reveal order
-    var frontier = [startNode];
+function getSubgraph(startNode, maxDepth, adjacencyMap) {
+  var visited = new Set([startNode]);   // insertion order = reveal order
+  var frontier = [startNode];
 
-    for (var depth = 0; depth < maxDepth && frontier.length > 0; depth++) {
-        var frontierSet = new Set(frontier);
-        var best = new Map();             // new node -> strongest link value reaching it
+  for (var depth = 0; depth < maxDepth && frontier.length > 0; depth++) {
+    var best = new Map();               // new node -> strongest link reaching it
 
-        links.forEach(function(link) {
-            var v = Number(link.value);
-            if (v < threshold) return;    // same cutoff as draw()
-
-            var neighbor = null;
-            if (frontierSet.has(link.source)) neighbor = link.target;
-            else if (frontierSet.has(link.target)) neighbor = link.source;
-
-            if (neighbor === null || visited.has(neighbor)) return;
-            if (!best.has(neighbor) || v > best.get(neighbor)) best.set(neighbor, v);
-        });
-
-        // strongest connection first within this level
-        var next = Array.from(best.entries())
-            .sort(function(a, b) { return b[1] - a[1]; })
-            .map(function(e) { return e[0]; });
-
-        next.forEach(function(n) { visited.add(n); });
-        frontier = next;
+    for (var node of frontier) {
+      var neighbors = adjacencyMap.get(node) || [];
+      for (var info of neighbors) {
+        if (info.value < threshold) break;           // list is strongest-first
+        if (visited.has(info.neighbor)) continue;    // continue, not return
+        if (!best.has(info.neighbor) || info.value > best.get(info.neighbor)) {
+          best.set(info.neighbor, info.value);
+        }
+      }
     }
 
-    return visited;   // a Set: start node, then depth 1 by strength, depth 2 by strength, ...
+    var next = Array.from(best.entries())
+      .sort(function (a, b) { return b[1] - a[1]; })
+      .map(function (e) { return e[0]; });
+    next.forEach(function (n) { visited.add(n); });
+    frontier = next;
+  }
+  return visited;
 }
 // Filters links to only include those between visible nodes
+// Note: maybe implent direct reconstruction from adjacencyMap instead of filtering links, but this is simpler for now
 function get_new_links(visible_Nodes, links){
   var visibleLinks = [];
   links.forEach(function(link) {
@@ -889,13 +1041,17 @@ function get_new_links(visible_Nodes, links){
 }
 
 // Performs a shallow search to find links connected to the target node
-function shallow_search(links, target) {
+function shallow_search(adjacencyMap, target, threshold) {
   var new_links = [];
-  links.forEach(function(link) {
-    if (link.source === target || link.target === target) {
-      new_links.push(link);
-    }
-  });
+  const neighbors = adjacencyMap.get(target) || [];
+  for (const neighbor of neighbors) {
+    if (neighbor.value < threshold) break;
+    new_links.push({
+      source: neighbor.direction === "asSource" ? target : neighbor.neighbor,
+      target: neighbor.direction === "asTarget" ? target : neighbor.neighbor,
+      value: neighbor.value
+    })
+  }
   return new_links;
 }
 
@@ -909,13 +1065,12 @@ var previousThresholds = []; // remember previous threshold values
 var revealOrder = [];   // node names in the order they appeared on the graph
 
 // One place that builds the table + graph, so every entry point behaves the same
-function renderGraph(new_links) {
+function renderGraph(new_links, preserveLayout) {
   currentLinks = new_links;
-  make_table(new_links);
-  draw(new_links);
+  table_obj = make_table(new_links);
+  draw(new_links, preserveLayout);
   enrichBtn.disabled = false;
   derichBtn.disabled = enrichHistory.length === 0;
-  table_obj = make_table(new_links);
 }
 
 function syncThresholdUI(t) {
@@ -923,22 +1078,28 @@ function syncThresholdUI(t) {
   document.getElementById("thresholdValueOut").value = t.toFixed(3);
 }
 
+
 function enrich_graph() {
-  if (!links || !currentLinks || !lastNodesMap) return;
+  if (!adjacencyMap || !currentLinks || !lastNodesMap) return;
+  snapshotCurrentPositions();
 
   var visible = new Set(Object.keys(lastNodesMap));
   if (visible.size === 0 && itemSelecionado && itemSelecionado !== "all") {
     visible.add(itemSelecionado);
   }
 
-  var orderBefore = revealOrder.slice();
-  // strongest link with exactly one endpoint on screen => it brings in a new node
+  // each list is strongest-first, so a node's first unseen neighbor is its best candidate
   var best = null;
-
-  links.forEach(function(link) {
-    if (visible.has(link.source) === visible.has(link.target)) return;
-    if (best === null || Number(link.value) > Number(best.value)) best = link;
+  var origin = null
+  visible.forEach(function (node) {
+    for (var info of (adjacencyMap.get(node) || [])) {
+      if (visible.has(info.neighbor)) continue;
+      if (!best || info.value > best.value) best = { node: info.neighbor, value: info.value };
+      origin = node;
+      break;
+    }
   });
+
 
   if (!best) {
     console.warn("No further nodes connected to the current graph.");
@@ -947,19 +1108,26 @@ function enrich_graph() {
   }
 
   var thresholdBefore = threshold;
-  var visibleBefore = Array.from(visible);        // snapshot BEFORE adding the node
+  var visibleBefore = Array.from(visible);
+  var orderBefore = revealOrder.slice();
 
-  var bestNode = visible.has(best.source) ? best.target : best.source;
-  visible.add(bestNode);
-  console.log(bestNode)
-
-  threshold = Math.min(threshold, Number(best.value));
+  visible.add(best.node);
+  threshold = Math.min(threshold, best.value);
   syncThresholdUI(threshold);
 
-  revealOrder.push(bestNode);
-  enrichHistory.push({ node: bestNode, visible: visibleBefore, threshold: thresholdBefore, order: orderBefore });
-  console.log(enrichHistory);
-  renderGraph(get_new_links(visible, links));
+  // Add the next node based on its most adjecant node
+  if (!savedNodePositions[best.node] && savedNodePositions[origin]) {
+    var p = savedNodePositions[origin];
+    savedNodePositions[best.node] = {
+      x: p.x + (Math.random() - 0.5) * 80,
+      y: p.y + (Math.random() - 0.5) * 80,
+      fixed: false
+    };
+  }
+
+  revealOrder.push(best.node);
+  enrichHistory.push({ node: best.node, visible: visibleBefore, threshold: thresholdBefore, order: orderBefore });
+  renderGraph(get_new_links(visible, links), true);
 }
 
 function derich_graph() {
@@ -968,14 +1136,15 @@ function derich_graph() {
 
   var last = enrichHistory.pop();
   revealOrder = last.order;
+  delete savedNodePositions[last.node];
   threshold = last.threshold;
   syncThresholdUI(threshold);
   console.log("Undo: removed", last.node);
 
-  renderGraph(get_new_links(new Set(last.visible), links));
+  renderGraph(get_new_links(new Set(last.visible), links), true);
 }
 
-enrichBtn.addEventListener("click", enrich_graph);
+enrichBtn.addEventListener("click", () => { enrich_graph(lastCircleSelection, adjacencyMap, threshold, currentLinks) });
 derichBtn.addEventListener("click", derich_graph);
 // Creates a table ordered by most-linked nodes, and renders it into #table.
 function make_table(new_links) {
@@ -1050,6 +1219,16 @@ function make_table(new_links) {
     table.innerHTML = rows;
 
     return table_obj;
+}
+
+function snapshotCurrentPositions() {
+  if (!lastNodesMap) return;
+  Object.keys(lastNodesMap).forEach(function(name) {
+    var n = lastNodesMap[name];
+    if (n && !isNaN(n.x) && !isNaN(n.y)) {
+      savedNodePositions[name] = { x: n.x, y: n.y, fixed: true };
+    }
+  });
 }
 
 function sortTable(table_obj, selectedColumn){
@@ -1251,7 +1430,7 @@ function renderTaxonLegend(){
         .text(function(t) { return t + " (n" + taxonNumbering[t] + ")"; });
 }
 // Begins to draw the graph
-function draw(links){
+function draw(links, preserveLayout){
 
 	// clear out any previously drawn graph so repeated "Generate Graph"
 	// clicks don't stack multiple <svg> elements on top of each other
@@ -1286,6 +1465,13 @@ function draw(links){
 		nodeDegree[link.target.name] = (nodeDegree[link.target.name] || 0) + 1;
 	});
 
+	Object.keys(nodes).forEach(function (name) {
+        var pos = savedNodePositions[name];
+        if (!pos) return;
+        nodes[name].x = nodes[name].px = pos.x;
+        nodes[name].y = nodes[name].py = pos.y;
+        if (pos.fixed !== false) nodes[name].fixed = 16;
+    });
 
 
 	if (itemSelecionado && itemSelecionado !== "all" && nodes[itemSelecionado]) {
@@ -1313,7 +1499,12 @@ function draw(links){
 		.linkDistance(linkDistanceValue)
 		.charge(chargeValue)
 		.on("tick", tick)
+		.on("end", function () {
+    force.nodes().forEach(function (d) { d.fixed &= ~16; });   // physics back on for dragging
+    snapshotCurrentPositions();                                // store final positions, drags included
+		})
 		.start();
+
 
 	setTimeout(function() {
     force.stop();
@@ -1360,13 +1551,18 @@ function draw(links){
 	var zoom = d3.behavior.zoom()
     .scaleExtent([0.1, 8])
     .on("zoom", function() {
-        container.attr("transform",
-            "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        savedZoomTranslate = d3.event.translate.slice();
+        savedZoomScale = d3.event.scale;
+        container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
     });
 
 	svg.call(zoom);
 	svg.on("dblclick.zoom", null);
 
+	if (preserveLayout && savedZoomTranslate && savedZoomScale) {
+    zoom.translate(savedZoomTranslate).scale(savedZoomScale);
+    container.attr("transform", "translate(" + savedZoomTranslate + ")scale(" + savedZoomScale + ")");
+	}
 	// build the arrow.
 	svg.append("svg:defs").selectAll("marker")
 		.data(["end"])      // Different link/path types can be defined here
@@ -1464,30 +1660,45 @@ function draw(links){
 
 	// add the curvy lines
 	var settled = false;
+	function render() {
+    path.attr("d", function(d) {
+        var dx = d.target.x - d.source.x,
+            dy = d.target.y - d.source.y,
+            dr = Math.sqrt(dx * dx + dy * dy);
+        return "M" +
+            d.source.x + "," +
+            d.source.y + "A" +
+            dr + "," + dr + " 0 0,1 " +
+            d.target.x + "," +
+            d.target.y;
+    });
+
+    node.attr("transform", function(d) {
+        return "translate(" + d.x + "," + d.y + ")";
+    });
+	}
+
+	var settled = false;
 	function tick() {
-		path.attr("d", function(d) {
-			var dx = d.target.x - d.source.x,
-				dy = d.target.y - d.source.y,
-				dr = Math.sqrt(dx * dx + dy * dy);
-			return "M" +
-				d.source.x + "," +
-				d.source.y + "A" +
-				dr + "," + dr + " 0 0,1 " +
-				d.target.x + "," +
-				d.target.y;
-		});
-
-		node.attr("transform", function(d) {
-        return "translate(" + d.x + "," + d.y + ")"; });
-
+    render();
     if (!settled && force.alpha() < 0.02) {
         settled = true;
         force.stop();
         zoomToFit();
-    };
-
+    }
 	}
 
+	lastForce = force;
+
+	if (stopMark.checked) {
+    force.on("tick", null);                          // don't draw every step
+    for (var i = 0; i < 300; ++i) { if (force.tick()) break; }   // compute the layout silently
+    force.on("tick", tick);
+    render();                                        // one DOM update with final positions
+    settled = true;                                  // otherwise zoomToFit would fire after a later drag
+    applyFreeze(force);
+    zoomToFit();
+	}
 
 
 	// add legend
@@ -1699,7 +1910,11 @@ function download(){
     document.body.removeChild(link);
 
     URL.revokeObjectURL(url);
-}
+};
+
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+};
 
 </script>
 </body>
